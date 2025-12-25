@@ -1,0 +1,72 @@
+<section id="news" class="py-20 bg-blue-50">
+    <div class="container mx-auto px-6 md:px-12">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-blue-900 mb-4">Actualités</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Restez informés des dernières nouvelles de notre cabinet.</p>
+        </div>
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="lg:w-2/3">
+                <div class="relative bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div id="news-carousel" class="relative w-full m-0" data-carousel="slide">
+                        <div class="relative h-[520px] overflow-hidden rounded-lg">
+                            <div class="duration-700 ease-in-out" data-carousel-item="active">
+                                <div class="flex flex-col">
+                                    <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Nouvelle technologie" class="w-full h-64 md:h-80 object-cover">
+                                    <div class="p-6">
+                                        <span class="text-blue-600 text-sm">15 Juin 2023</span>
+                                        <h3 class="text-xl font-bold text-blue-900 my-2">Nouvel équipement de blanchiment</h3>
+                                        <p class="text-gray-600">Nous avons le plaisir de vous annoncer l'acquisition d'un nouveau système de blanchiment dentaire dernière génération, plus efficace et plus confortable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                                <div class="flex flex-col">
+                                    <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Horaires d'été" class="w-full h-64 md:h-80 object-cover">
+                                    <div class="p-6">
+                                        <span class="text-blue-600 text-sm">1er Juillet 2023</span>
+                                        <h3 class="text-xl font-bold text-blue-900 my-2">Horaires d'été</h3>
+                                        <p class="text-gray-600">Pendant les mois de juillet et août, le cabinet sera ouvert du lundi au vendredi de 8h à 18h. Fermeture exceptionnelle du 10 au 15 août.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                                <div class="flex flex-col">
+                                    <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Prévention" class="w-full h-64 md:h-80 object-cover">
+                                    <div class="p-6">
+                                        <span class="text-blue-600 text-sm">5 Septembre 2023</span>
+                                        <h3 class="text-xl font-bold text-blue-900 my-2">Campagne de prévention</h3>
+                                        <p class="text-gray-600">En septembre, profitez d'un bilan dentaire gratuit pour toute la famille. Prenez rendez-vous dès maintenant pour votre check-up.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="absolute top-1/2 left-4 z-30 flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-md hover:bg-blue-100 transition" data-carousel-prev>
+                            <i class="fas fa-chevron-left text-blue-800"></i>
+                        </button>
+                        <button type="button" class="absolute top-1/2 right-4 z-30 flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-md hover:bg-blue-100 transition" data-carousel-next>
+                            <i class="fas fa-chevron-right text-blue-800"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:w-1/3 flex flex-col">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex-1 flex flex-col">
+                    <img src="{{ asset('assets/img/secretaire.jpeg') }}" alt="Notre secrétaire" class="w-full h-64 object-cover">
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="relative -mt-16 mb-4">
+                            <div class="inline-block bg-blue-800 text-white px-4 py-2 rounded-lg">
+                                <h3 class="font-bold text-lg"><small>Mlle </small>Mariam Fatoumata SELLOU</h3>
+                                <p class="text-sm">Secrétaire</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6">Fatoumata est votre interlocutrice privilégiée pour toute question administrative ou pour prendre rendez-vous. N'hésitez pas à la contacter pour organiser votre visite.</p>
+                        <div class="mt-auto">
+                            <a href="#" class="block text-center bg-blue-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-900 transition">Voir toutes les actualités</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

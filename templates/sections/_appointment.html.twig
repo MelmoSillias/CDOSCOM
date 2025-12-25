@@ -1,0 +1,76 @@
+<section id="appointment" class="py-20 bg-blue-800 text-white">
+    <div class="container mx-auto px-6 md:px-12">
+        <div class="flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-12 md:mb-0 md:pr-12 animate-fadeIn">
+                <h2 class="text-3xl font-bold mb-6">Prenez rendez-vous</h2>
+                <p class="mb-6">Notre équipe est à votre disposition pour répondre à vos besoins dentaires. Réservez votre consultation en ligne ou par téléphone.</p>
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-700 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">+223 84 07 55 18 / +223 44 56 94 39</p>
+                            <p class="text-blue-200">Lundi - Vendredi : 8h - 20h | Samedi : 8h - 16h<br>Dimanche : Fermé</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-700 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">contact@cdos-dentaire.fr</p>
+                            <p class="text-blue-200">Réponse sous 24h</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:w-1/2 bg-white rounded-xl shadow-xl p-8 text-gray-800 animate-fadeIn delay-200">
+                <h3 class="text-2xl font-bold text-blue-800 mb-6">Formulaire de rendez-vous</h3>
+                <form id="appointment-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="firstname" class="block text-gray-700 mb-2">Prénom</label>
+                            <input type="text" id="firstname" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="lastname" class="block text-gray-700 mb-2">Nom</label>
+                            <input type="text" id="lastname" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-gray-700 mb-2">Téléphone</label>
+                        <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="date" class="block text-gray-700 mb-2">Date souhaitée</label>
+                        <input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-gray-700 mb-2">Message</label>
+                        <textarea id="message" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-900 transition">Envoyer la demande</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-green-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Demande envoyée!</h3>
+            <p class="text-gray-600 mb-6">Nous avons bien reçu votre demande de rendez-vous et vous contacterons dans les plus brefs délais.</p>
+            <button id="close-modal" class="bg-blue-800 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-900 transition">Fermer</button>
+        </div>
+    </div>
+</div>
