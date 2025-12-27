@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-6 md:px-12">
+        <div class="mb-8">
+            <a href="{{ path('news_index') }}" class="text-blue-700 hover:text-blue-500 font-semibold">← Retour aux actualités</a>
+        </div>
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-6">
+                <div class="text-blue-700 text-sm mb-2">{{ entry.date }}</div>
+                <h1 class="text-3xl font-bold text-blue-900">{{ entry.title }}</h1>
+            </div>
+            <div class="rounded-2xl overflow-hidden shadow-md mb-6">
+                <img src="{{ entry.image }}" alt="{{ entry.title }}" class="w-full h-72 object-cover">
+            </div>
+            <div class="bg-blue-50 rounded-2xl p-6 space-y-4">
+                <p class="text-gray-700">{{ entry.content }}</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    {% for bullet in entry.bullets %}
+                        <li>{{ bullet }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
+                    <p class="text-xs uppercase tracking-[0.2em] text-blue-500">Pourquoi c'est important</p>
+                    <p class="text-gray-700 text-sm">Cette actualité impacte votre confort au cabinet et prépare vos visites à venir.</p>
+                </div>
+                <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
+                    <p class="text-xs uppercase tracking-[0.2em] text-blue-500">Ce que vous pouvez faire</p>
+                    <p class="text-gray-700 text-sm">Anticipez vos rendez-vous, suivez les consignes partagées et contactez-nous pour toute question.</p>
+                </div>
+                <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
+                    <p class="text-xs uppercase tracking-[0.2em] text-blue-500">Rappel pratique</p>
+                    <p class="text-gray-700 text-sm">Gardez nos coordonnées à portée de main et vérifiez les horaires mis à jour sur le site.</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-900 text-white rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow">
+                <div>
+                    <p class="text-sm uppercase tracking-[0.2em] text-blue-200">Besoin d'aide ?</p>
+                    <h2 class="text-2xl font-bold">Nous répondons à vos questions</h2>
+                    <p class="text-blue-100">Appelez le cabinet ou écrivez-nous depuis la page contact, nous vous accompagnons.</p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="#contact" class="px-5 py-3 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition shadow">Contact</a>
+                    <a href="{{ path('news_index') }}" class="px-5 py-3 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-600 transition shadow">Retour aux actus</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

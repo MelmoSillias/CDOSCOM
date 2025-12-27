@@ -18,4 +18,5 @@
 /assets/vendor/
 ###< symfony/asset-mapper ###
 
-script.bash
+/script.bash
+/mods.txt

@@ -16,6 +16,9 @@
                                         <span class="text-blue-600 text-sm">15 Juin 2023</span>
                                         <h3 class="text-xl font-bold text-blue-900 my-2">Nouvel équipement de blanchiment</h3>
                                         <p class="text-gray-600">Nous avons le plaisir de vous annoncer l'acquisition d'un nouveau système de blanchiment dentaire dernière génération, plus efficace et plus confortable.</p>
+                                        <div class="mt-3">
+                                            <a href="{{ path('news_show', { slug: 'nouvel-equipement-blanchiment' }) }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-50 text-blue-800 font-semibold border border-blue-100 hover:bg-blue-800 hover:text-white transition shadow-sm">Voir</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -26,6 +29,9 @@
                                         <span class="text-blue-600 text-sm">1er Juillet 2023</span>
                                         <h3 class="text-xl font-bold text-blue-900 my-2">Horaires d'été</h3>
                                         <p class="text-gray-600">Pendant les mois de juillet et août, le cabinet sera ouvert du lundi au vendredi de 8h à 18h. Fermeture exceptionnelle du 10 au 15 août.</p>
+                                        <div class="mt-3">
+                                            <a href="{{ path('news_show', { slug: 'horaires-ete' }) }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-50 text-blue-800 font-semibold border border-blue-100 hover:bg-blue-800 hover:text-white transition shadow-sm">Voir</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -36,6 +42,9 @@
                                         <span class="text-blue-600 text-sm">5 Septembre 2023</span>
                                         <h3 class="text-xl font-bold text-blue-900 my-2">Campagne de prévention</h3>
                                         <p class="text-gray-600">En septembre, profitez d'un bilan dentaire gratuit pour toute la famille. Prenez rendez-vous dès maintenant pour votre check-up.</p>
+                                        <div class="mt-3">
+                                            <a href="{{ path('news_show', { slug: 'campagne-prevention' }) }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-50 text-blue-800 font-semibold border border-blue-100 hover:bg-blue-800 hover:text-white transition shadow-sm">Voir</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -62,7 +71,7 @@
                         </div>
                         <p class="text-gray-600 mb-6">Fatoumata est votre interlocutrice privilégiée pour toute question administrative ou pour prendre rendez-vous. N'hésitez pas à la contacter pour organiser votre visite.</p>
                         <div class="mt-auto">
-                            <a href="#" class="block text-center bg-blue-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-900 transition">Voir toutes les actualités</a>
+                            <a href="{{ path('news_index') }}" class="block text-center bg-blue-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-900 transition shadow">Voir toutes les actualités</a>
                         </div>
                     </div>
                 </div>
