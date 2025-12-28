@@ -1,0 +1,220 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Messages - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-6">Gestion des Messages</h1>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center">
+                <div class="p-2 bg-blue-100 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Total Messages</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ totalMessages }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center">
+                <div class="p-2 bg-red-100 rounded-lg">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Messages Non Lus</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ unreadMessages }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center">
+                <div class="p-2 bg-yellow-100 rounded-lg">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Messages Vus Non Répondus</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ readMessages }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center">
+                <div class="p-2 bg-green-100 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Messages Répondus</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ respondedMessages }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-lg font-semibold mb-4">Filtres</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <select id="filter-type" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option value="">Tous</option>
+                    <option value="contact">Contact</option>
+                    <option value="appointment">Rendez-vous</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                <select id="filter-status" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option value="">Tous</option>
+                    <option value="unread">Non lu</option>
+                    <option value="read">Vu non répondu</option>
+                    <option value="responded">Répondu</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                <input type="date" id="filter-date-start" class="w-full border border-gray-300 rounded-md px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                <input type="date" id="filter-date-end" class="w-full border border-gray-300 rounded-md px-3 py-2">
+            </div>
+        </div>
+        <div class="mt-4 flex flex-col sm:flex-row gap-4">
+            <button id="apply-filters" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md font-medium">Appliquer les filtres</button>
+            <button id="reset-filters" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md font-medium">Réinitialiser</button>
+        </div>
+    </div>
+
+    <!-- Messages Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+            <h2 class="text-2xl font-bold text-gray-800">Messages</h2>
+            <p class="text-sm text-gray-600 mt-1">Gérez les messages de contact et rendez-vous</p>
+        </div>
+        <div class="p-6 overflow-x-auto">
+            <div class="mb-4 md:hidden">
+                <p class="text-sm text-gray-600 flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+                    </svg>
+                    Faites défiler horizontalement pour voir toutes les colonnes
+                </p>
+            </div>
+            <table id="messages-table" class="w-full text-base text-left border-collapse min-w-[800px]">
+                <thead class="text-sm text-gray-800 uppercase bg-gradient-to-r from-blue-50 to-indigo-50 border-b-2 border-blue-200">
+                    <tr>
+                        <th class="px-4 md:px-8 py-4 font-semibold text-blue-900">ID</th>
+                        <th class="px-4 md:px-8 py-4 font-semibold text-blue-900">Nom</th>
+                        <th class="px-4 md:px-8 py-4 font-semibold text-blue-900 hidden sm:table-cell">Email</th>
+                        <th class="px-4 md:px-8 py-4 font-semibold text-blue-900 hidden md:table-cell">Téléphone</th>
+                        <th class="px-4 md:px-8 py-4 font-semibold text-blue-900">Type</th>
+                        <th class="px-4 md:px-8 py-4 font-semibold text-blue-900">Statut</th>
+                        <th class="px-4 md:px-8 py-4 font-semibold text-blue-900 hidden lg:table-cell">Date</th>
+                        <th class="px-4 md:px-8 py-4 font-semibold text-blue-900">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                </tbody>
+            </table>
+            <div id="pagination-container" class="mt-6"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<!-- Details Modal -->
+<div id="details-modal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Détails du Message</h3>
+                <button id="close-details-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="message-details" class="text-sm text-gray-600">
+                <!-- Details will be loaded here -->
+            </div>
+            <div class="flex justify-end mt-4">
+                <button id="close-details-modal-btn" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reply Modal -->
+<div id="reply-modal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Répondre au Message</h3>
+                <button id="close-reply-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="reply-message-details" class="mb-4 p-3 bg-gray-50 rounded">
+                <!-- Message details will be loaded here -->
+            </div>
+            <form id="reply-form">
+                <div class="mb-4">
+                    <label for="reply-subject" class="block text-sm font-medium text-gray-700">Sujet</label>
+                    <input type="text" id="reply-subject" name="subject" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="reply-message" class="block text-sm font-medium text-gray-700">Message</label>
+                    <textarea id="reply-message" name="message" rows="6" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" id="close-reply-modal-btn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">Annuler</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Envoyer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Confirmer la suppression</h3>
+            <p class="text-sm text-gray-600 mb-4">Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.</p>
+            <div class="flex justify-end space-x-2">
+                <button id="cancel-delete" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">Annuler</button>
+                <button id="confirm-delete" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset('assets/js/admin_messages.js') }}"></script>
+{% endblock %}

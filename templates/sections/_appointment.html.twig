@@ -1,6 +1,7 @@
 <section id="appointment" class="py-20 bg-blue-800 text-white">
     <div class="container mx-auto px-6 md:px-12">
         <div class="flex flex-col md:flex-row items-center">
+            <!-- Section gauche -->
             <div class="md:w-1/2 mb-12 md:mb-0 md:pr-12 animate-fadeIn">
                 <h2 class="text-3xl font-bold mb-6">Prenez rendez-vous</h2>
                 <p class="mb-6">Notre équipe est à votre disposition pour répondre à vos besoins dentaires. Réservez votre consultation en ligne ou par téléphone.</p>
@@ -26,34 +27,206 @@
                 </div>
             </div>
 
+            <!-- Section droite : Formulaire -->
             <div class="md:w-1/2 bg-white rounded-xl shadow-xl p-8 text-gray-800 animate-fadeIn delay-200">
                 <h3 class="text-2xl font-bold text-blue-800 mb-6">Formulaire de rendez-vous</h3>
                 <form id="appointment-form" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="firstname" class="block text-gray-700 mb-2">Prénom</label>
-                            <input type="text" id="firstname" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id="firstname" name="firstName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                         </div>
                         <div>
                             <label for="lastname" class="block text-gray-700 mb-2">Nom</label>
-                            <input type="text" id="lastname" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id="lastname" name="lastName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                         </div>
                     </div>
                     <div>
                         <label for="email" class="block text-gray-700 mb-2">Email</label>
-                        <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     </div>
                     <div>
-                        <label for="phone" class="block text-gray-700 mb-2">Téléphone</label>
-                        <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <label for="phone-input" class="block text-gray-700 mb-2">Téléphone</label>
+                        <div class="flex items-center -space-x-px shadow-xs rounded-base">
+                            <button id="dropdown-phone-button" data-dropdown-toggle="dropdown-phone" type="button" class="inline-flex items-center shrink-0 z-10 text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-s-base text-sm px-4 py-2.5 focus:outline-none">
+                                <span data-selected-code="true" class="mx-1">+223</span>
+                                <svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div id="dropdown-phone" class="z-10 hidden bg-white border border-default-medium rounded-base shadow-lg w-54">
+                                <ul class="p-2 text-sm text-body font-medium" aria-labelledby="dropdown-phone-button">
+                                    <li>
+                                        <a href="#" data-country="Mali" data-code="+223" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="18" height="18" rx="9" fill="#009E49"/>
+                                                <rect x="6" y="6" width="6" height="6" fill="#FCD116"/>
+                                            </svg>
+                                            Mali (+223)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Sénégal" data-code="+221" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="6" height="18" fill="#009E49"/>
+                                                <rect x="6" y="0" width="6" height="18" fill="#FCD116"/>
+                                                <rect x="12" y="0" width="6" height="18" fill="#C8102E"/>
+                                            </svg>
+                                            Sénégal (+221)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Côte d'Ivoire" data-code="+225" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="6" height="18" fill="#F77F00"/>
+                                                <rect x="6" y="0" width="6" height="18" fill="white"/>
+                                                <rect x="12" y="0" width="6" height="18" fill="#009E49"/>
+                                            </svg>
+                                            Côte d'Ivoire (+225)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Burkina Faso" data-code="+226" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="18" height="9" fill="#009E49"/>
+                                                <rect y="9" width="18" height="9" fill="#EF2B2D"/>
+                                                <path d="M9 0L9 18" stroke="#FCD116" stroke-width="2"/>
+                                            </svg>
+                                            Burkina Faso (+226)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Niger" data-code="+227" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="6" height="18" fill="#F77F00"/>
+                                                <rect x="6" y="0" width="6" height="18" fill="white"/>
+                                                <rect x="12" y="0" width="6" height="18" fill="#009E49"/>
+                                                <circle cx="9" cy="9" r="3" fill="#F77F00"/>
+                                            </svg>
+                                            Niger (+227)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Guinée" data-code="+224" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="6" height="18" fill="#CE1126"/>
+                                                <rect x="6" y="0" width="6" height="18" fill="#FCD116"/>
+                                                <rect x="12" y="0" width="6" height="18" fill="#009E49"/>
+                                            </svg>
+                                            Guinée (+224)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Bénin" data-code="+229" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="6" height="18" fill="#009E49"/>
+                                                <rect x="6" y="0" width="6" height="18" fill="#FCD116"/>
+                                                <rect x="12" y="0" width="6" height="18" fill="#C8102E"/>
+                                            </svg>
+                                            Bénin (+229)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Togo" data-code="+228" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="5.4" height="18" fill="#009E49"/>
+                                                <rect x="5.4" y="0" width="5.4" height="18" fill="#FCD116"/>
+                                                <rect x="10.8" y="0" width="5.4" height="18" fill="#C8102E"/>
+                                                <rect x="16.2" y="0" width="1.8" height="18" fill="#009E49"/>
+                                            </svg>
+                                            Togo (+228)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Ghana" data-code="+233" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="18" height="6" fill="#006600"/>
+                                                <rect y="6" width="18" height="6" fill="#FCD116"/>
+                                                <rect y="12" width="18" height="6" fill="#CE1126"/>
+                                                <circle cx="9" cy="9" r="2" fill="black"/>
+                                            </svg>
+                                            Ghana (+233)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Nigeria" data-code="+234" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="6" height="18" fill="#009E49"/>
+                                                <rect x="6" y="0" width="6" height="18" fill="white"/>
+                                                <rect x="12" y="0" width="6" height="18" fill="#009E49"/>
+                                            </svg>
+                                            Nigeria (+234)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="United States" data-code="+1" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8.00013 14.6666C11.6821 14.6666 14.667 11.6818 14.667 7.99992C14.667 4.31802 11.6821 1.33325 8.00013 1.33325C4.31811 1.33325 1.33325 4.31802 1.33325 7.99992C1.33325 11.6818 4.31811 14.6666 8.00013 14.6666Z" fill="white"/>
+                                                <path d="M7.71167 7.99975H14.6678C14.6678 7.39807 14.5876 6.8152 14.4382 6.26074H7.71167V7.99975Z" fill="#D80027"/>
+                                                <path d="M7.71167 4.52172H13.6894C13.2813 3.85583 12.7596 3.26726 12.1512 2.78271H7.71167V4.52172Z" fill="#D80027"/>
+                                            </svg>
+                                            United States (+1)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Australia" data-code="+61" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="9" cy="9" r="7.5" fill="#1A47B8"/>
+                                                <path d="M1.5 3.3916h15.3v1.43H1.5V3.3916z" fill="#C8102E"/>
+                                                <path d="M1.5 13.1699h15.3v1.43H1.5v-1.43z" fill="#C8102E"/>
+                                                <path d="M3.3 1.5v15.3h1.43H3.3V1.5z" fill="#C8102E"/>
+                                                <path d="M13.27 1.5v15.3h1.43h-1.43V1.5z" fill="#C8102E"/>
+                                                <path d="M4.73 4.73h8.84v8.84H4.73V4.73z" fill="#C8102E"/>
+                                                <path d="M6.16 1.5v3.23h5.08V1.5h-5.08z" fill="#C8102E"/>
+                                                <path d="M1.5 7.37h3.23v5.08H1.5V7.37z" fill="#C8102E"/>
+                                            </svg>
+                                            Australia (+61)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="United Kingdom" data-code="+44" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z" fill="white"/>
+                                                <path d="M3.05081 4.43384C2.46168 5.20033 2.01745 6.08378 1.75879 7.04352H5.66049L3.05081 4.43384Z" fill="#1A47B8"/>
+                                                <path d="M16.2415 7.04349C15.9828 6.08378 15.5386 5.20033 14.9495 4.43384L12.3398 7.04349H16.2415Z" fill="#1A47B8"/>
+                                            </svg>
+                                            United Kingdom (+44)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="France" data-code="+33" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z" fill="white"/>
+                                                <path d="M16.5012 9.00018C16.5012 5.77544 14.4659 3.02637 11.6099 1.96667V16.0337C14.4659 14.974 16.5012 12.2249 16.5012 9.00018Z" fill="#D80027"/>
+                                                <path d="M1.5 8.99994C1.5 12.2247 3.53534 14.9737 6.39132 16.0334V1.96643C3.53534 3.02613 1.5 5.7752 1.5 8.99994Z" fill="#1A47B8"/>
+                                            </svg>
+                                            France (+33)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-country="Canada" data-code="+1" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">
+                                            <svg class="w-4 h-4 me-1.5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9.00012 16.5C13.1423 16.5 16.5002 13.1421 16.5002 9C16.5002 4.85786 13.1423 1.5 9.00012 1.5C4.85792 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85792 16.5 9.00012 16.5Z" fill="white"/>
+                                                <path d="M16.5009 8.99956C16.5009 6.02627 14.7705 3.4572 12.2619 2.24414V15.7549C14.7705 14.5419 16.5009 11.9728 16.5009 8.99956Z" fill="#D80027"/>
+                                                <path d="M1.5 8.99955C1.5 11.9728 3.23035 14.5419 5.73897 15.755V2.24414C3.23035 3.4572 1.5 6.02627 1.5 8.99955Z" fill="#D80027"/>
+                                            </svg>
+                                            Canada (+1)
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="relative w-full">
+                                <input type="tel" id="phone-input" name="phone" class="w-full z-20 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-e-base focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand block w-full px-3 py-2.5 placeholder:text-body" placeholder="12 34 56 78" required />
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label for="date" class="block text-gray-700 mb-2">Date souhaitée</label>
-                        <input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="date" id="date" name="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     </div>
                     <div>
                         <label for="message" class="block text-gray-700 mb-2">Message</label>
-                        <textarea id="message" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        <textarea id="message" name="message" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
                     </div>
                     <button type="submit" class="w-full bg-blue-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-900 transition">Envoyer la demande</button>
                 </form>
@@ -62,15 +235,136 @@
     </div>
 </section>
 
+<!-- Modal de succès/erreur -->
 <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
         <div class="text-center">
-            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-check text-green-600 text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Demande envoyée!</h3>
-            <p class="text-gray-600 mb-6">Nous avons bien reçu votre demande de rendez-vous et vous contacterons dans les plus brefs délais.</p>
+            <div id="modal-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"></div>
+            <h3 id="modal-title" class="text-xl font-bold mb-2"></h3>
+            <p id="modal-message" class="text-gray-600 mb-6"></p>
             <button id="close-modal" class="bg-blue-800 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-900 transition">Fermer</button>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdown = document.getElementById('dropdown-phone');
+    const button = document.getElementById('dropdown-phone-button');
+    const input = document.getElementById('phone-input');
+    const codeSpan = button.querySelector('[data-selected-code]');
+
+    // Gestion du dropdown
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+        dropdown.classList.toggle('hidden');
+    });
+
+    // Sélection d'un pays
+    dropdown.querySelectorAll('[data-code]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const code = link.dataset.code;
+            codeSpan.textContent = code;
+            input.placeholder = `${code} 12 34 56 78`;
+            dropdown.classList.add('hidden');
+        });
+    });
+
+    // Fermeture du dropdown
+    document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+
+    // Soumission du formulaire
+    document.getElementById('appointment-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = {
+            type: 'appointment',
+            firstName: formData.get('firstName'),
+            lastName: formData.get('lastName'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            date: formData.get('date'),
+            message: formData.get('message')
+        };
+
+        // Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(data.email)) {
+            showModal('error', 'Erreur', 'Veuillez entrer une adresse email valide.');
+            return;
+        }
+
+        // Validation du téléphone selon le pays
+        const selectedCode = codeSpan.textContent;
+        let phoneRegex;
+        let phoneFormat;
+        switch (selectedCode) {
+            case '+223': phoneRegex = /^\+223\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/; phoneFormat = '+223 XX XX XX XX'; break; // Mali
+            case '+221': phoneRegex = /^\+221\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/; phoneFormat = '+221 XX XX XX XX'; break; // Sénégal
+            case '+225': phoneRegex = /^\+225\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/; phoneFormat = '+225 XX XX XX XX'; break; // Côte d'Ivoire
+            case '+1': phoneRegex = /^\+1\s?\d{3}\s?\d{3}\s?\d{4}$/; phoneFormat = '+1 XXX XXX XXXX'; break; // USA/Canada
+            case '+44': phoneRegex = /^\+44\s?\d{4}\s?\d{6}$/; phoneFormat = '+44 XXXX XXXXXX'; break; // UK
+            case '+33': phoneRegex = /^\+33\s?\d{1}\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/; phoneFormat = '+33 X XX XX XX XX'; break; // France
+            default: phoneRegex = /^.+$/; phoneFormat = 'format générique'; break;
+        }
+
+        if (!phoneRegex.test(data.phone)) {
+            showModal('error', 'Erreur', `Veuillez entrer un numéro de téléphone valide pour le pays sélectionné (format : ${phoneFormat}).`);
+            return;
+        }
+
+        if (!data.firstName.trim() || !data.lastName.trim() || !data.date || !data.message.trim()) {
+            showModal('error', 'Erreur', 'Tous les champs sont obligatoires.');
+            return;
+        }
+
+        // Envoi à l'API
+        fetch('/api/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.error) {
+                showModal('error', 'Erreur d\'envoi', result.error);
+            } else {
+                showModal('success', 'Demande envoyée!', result.message);
+                this.reset();
+            }
+        })
+        .catch(error => {
+            showModal('error', 'Erreur', 'Une erreur s\'est produite. Veuillez réessayer.');
+        });
+    });
+
+    // Gestion de la modal
+    function showModal(type, title, message) {
+        const modal = document.getElementById('success-modal');
+        const icon = document.getElementById('modal-icon');
+        const titleEl = document.getElementById('modal-title');
+        const messageEl = document.getElementById('modal-message');
+
+        if (type === 'success') {
+            icon.innerHTML = '<i class="fas fa-check text-green-600 text-2xl"></i>';
+            icon.className = 'w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4';
+        } else {
+            icon.innerHTML = '<i class="fas fa-times text-red-600 text-2xl"></i>';
+            icon.className = 'w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4';
+        }
+
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        modal.classList.remove('hidden');
+    }
+
+    document.getElementById('close-modal').addEventListener('click', function() {
+        document.getElementById('success-modal').classList.add('hidden');
+    });
+});
+</script>

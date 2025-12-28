@@ -2,36 +2,36 @@
     <div class="container mx-auto px-0 md:px-0">
         <div id="hero-carousel" class="relative w-full m-0" data-carousel="slide">
             <div class="relative h-[600px] overflow-hidden rounded-lg">
-                <div class="duration-700 fade-in relative" data-carousel-item="active">
-                    <div class="flex flex-col md:flex-row items-center h-full gap-4">
-                        <img src="{{ asset('assets/img/acceuil.webp') }}" class="w-full h-auto brightness-50" alt="">
+                <div class="duration-[1500ms] fade-in relative" data-carousel-item="active">
+                    <div class="relative h-[600px] flex flex-col md:flex-row items-center gap-4">
+                        <img src="{{ asset('assets/img/acceuil.webp') }}" class="w-full h-full object-cover brightness-50 md:rounded-lg" alt="">
                         <div class="absolute inset-0 flex flex-col items-center justify-center text-white px-4">
-                            <div class="w-[256px] h-[256px] rounded-full flex items-center justify-center mr-3">
-                                <img src="{{ asset('assets/img/logoCDOS.png') }}" alt="">
+                            <div class="w-40 h-40 md:w-[256px] md:h-[256px] rounded-full flex items-center justify-center mb-4 md:mb-0">
+                                <img src="{{ asset('assets/img/logoCDOS.png') }}" alt="" class="w-full h-full object-contain">
                             </div>
-                            <div class="text-2xl font-normal">
+                            <div class="text-xl md:text-2xl font-normal">
                                 Bienvenue
                                 <span class="text-sm font-normal">au</span>
                             </div>
-                            <div class="text-6xl font-bold mt-2">
+                            <div class="text-3xl md:text-6xl font-bold mt-2 text-center">
                                 Cabinet dentaire Ousmane Sow
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <div class="flex flex-col md:flex-row gap-4 items-center h-full">
-                        <div class="md:w-1/2 mb-12 md:mb-0">
-                            <h1 class="text-4xl md:text-5xl font-bold text-blue-900 mb-6">Votre sourire, notre priorité</h1>
-                            <p class="text-lg text-gray-600 mb-8">Le Cabinet Dentaire Ousmane Sow vous accueille dans un environnement moderne et chaleureux pour des soins dentaires de qualité.</p>
-                            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                <div class="hidden duration-[1500ms] ease-in-out" data-carousel-item>
+                    <div class="flex flex-col md:flex-row gap-4 items-center h-full px-4 py-8 md:py-0">
+                        <div class="w-full md:w-1/2 mb-8 md:mb-0">
+                            <h1 class="text-2xl md:text-5xl font-bold text-blue-900 mb-4 md:mb-6 text-center md:text-left">Votre sourire, notre priorité</h1>
+                            <p class="text-base md:text-lg text-gray-600 mb-6 md:mb-8 text-center md:text-left">Le Cabinet Dentaire Ousmane Sow vous accueille dans un environnement moderne et chaleureux pour des soins dentaires de qualité.</p>
+                            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center md:items-start">
                                 <a href="{{ path('section_appointment') }}" class="bg-blue-800 text-white px-8 py-3 rounded-full font-medium hover:bg-blue-900 transition text-center">Prendre RDV</a>
                                 <a href="{{ path('app_home') }}#about" class="border-2 border-blue-800 text-blue-800 px-8 py-3 rounded-full font-medium hover:bg-blue-100 transition text-center">En savoir plus</a>
                             </div>
                         </div>
-                        <div class="md:w-1/2 relative">
-                            <img src="{{ asset('assets/img/iagirl1.jpeg') }}" alt="Dentiste CDOS" class="rounded-xl shadow-xl w-full h-auto">
-                            <div class="absolute top-16 left-2 bg-white p-4 rounded-xl shadow-lg hidden md:block">
+                        <div class="w-full md:w-1/2 relative flex justify-center">
+                            <img src="{{ asset('assets/img/iagirl1.jpeg') }}" alt="Dentiste CDOS" class="rounded-xl shadow-xl w-full max-w-xs md:max-w-full h-auto mx-auto">
+                            <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-white p-4 rounded-xl shadow-lg hidden md:block">
                                 <div class="flex items-center">
                                     <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                                         <i class="fas fa-check text-blue-800 text-xl"></i>
@@ -46,18 +46,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <div class="flex flex-col md:flex-row items-center h-full gap-4">
-                        <div class="md:w-1/2 mb-12 md:mb-0">
-                            <h1 class="text-4xl md:text-5xl font-bold text-blue-900 mb-6">Des soins de qualité pour toute la famille</h1>
-                            <p class="text-lg text-gray-600 mb-8">Notre équipe vous accompagne avec expertise et bienveillance à chaque étape de votre traitement.</p>
-                            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                <div class="hidden duration-[1500ms] ease-in-out" data-carousel-item>
+                    <div class="flex flex-col md:flex-row items-center h-full gap-4 px-4 py-8 md:py-0">
+                        <div class="w-full md:w-1/2 mb-8 md:mb-0">
+                            <h1 class="text-2xl md:text-5xl font-bold text-blue-900 mb-4 md:mb-6 text-center md:text-left">Des soins de qualité pour toute la famille</h1>
+                            <p class="text-base md:text-lg text-gray-600 mb-6 md:mb-8 text-center md:text-left">Notre équipe vous accompagne avec expertise et bienveillance à chaque étape de votre traitement.</p>
+                            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center md:items-start">
                                 <a href="{{ path('section_services') }}" class="bg-blue-800 text-white px-8 py-3 rounded-full font-medium hover:bg-blue-900 transition text-center">Nos services</a>
                                 <a href="{{ path('section_team') }}" class="border-2 border-blue-800 text-blue-800 px-8 py-3 rounded-full font-medium hover:bg-blue-100 transition text-center">Notre équipe</a>
                             </div>
                         </div>
-                        <div class="md:w-1/2">
-                            <img src="{{ asset('assets/img/team.jpeg') }}" alt="Equipe CDOS" class="rounded-xl shadow-xl w-full h-auto">
+                        <div class="w-full md:w-1/2 flex justify-center">
+                            <img src="{{ asset('assets/img/team.jpeg') }}" alt="Equipe CDOS" class="rounded-xl shadow-xl w-full max-w-xs md:max-w-[80%] h-auto mx-auto">
                         </div>
                     </div>
                 </div>
