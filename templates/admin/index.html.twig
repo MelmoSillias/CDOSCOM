@@ -3,6 +3,59 @@
 {% block title %}Admin - {{ parent() }}{% endblock %}
 
 {% block body %}
-    <h1 class="text-2xl font-bold">Tableau de bord administrateur</h1>
-    <p class="mt-2">Bienvenue sur le tableau de bord administrateur.</p>
+    <div class="space-y-6">
+        <section class="rounded-2xl bg-gradient-to-r from-blue-800 to-indigo-700 text-white p-6 shadow-lg">
+            <p class="text-blue-100 uppercase tracking-widest text-xs">Administration</p>
+            <h1 class="text-3xl font-bold mt-2">Tableau de bord intelligent</h1>
+            <p class="mt-2 text-blue-100">Suivi en temps reel de l'activite des visiteurs et de la performance du site.</p>
+        </section>
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <article class="bg-white rounded-xl shadow p-5 border border-blue-100">
+                <p class="text-sm text-gray-500">Evenements captes</p>
+                <p id="kpi-events" class="text-3xl font-bold text-gray-900 mt-2">0</p>
+            </article>
+            <article class="bg-white rounded-xl shadow p-5 border border-emerald-100">
+                <p class="text-sm text-gray-500">Visiteurs uniques</p>
+                <p id="kpi-visitors" class="text-3xl font-bold text-gray-900 mt-2">0</p>
+            </article>
+            <article class="bg-white rounded-xl shadow p-5 border border-amber-100">
+                <p class="text-sm text-gray-500">Pages vues</p>
+                <p id="kpi-page-views" class="text-3xl font-bold text-gray-900 mt-2">0</p>
+            </article>
+            <article class="bg-white rounded-xl shadow p-5 border border-violet-100">
+                <p class="text-sm text-gray-500">Duree moyenne</p>
+                <p id="kpi-duration" class="text-3xl font-bold text-gray-900 mt-2">0s</p>
+            </article>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <article class="xl:col-span-2 bg-white rounded-xl shadow p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Tendance des pages vues (14 jours)</h2>
+                </div>
+                <div class="h-80">
+                    <canvas id="chart-views"></canvas>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-xl shadow p-5">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Repartition des evenements</h2>
+                <div class="h-64">
+                    <canvas id="chart-events"></canvas>
+                </div>
+            </article>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-5">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Top pages visitees</h2>
+            <ul id="top-pages-list" class="space-y-2"></ul>
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('assets/js/admin_dashboard.js') }}"></script>
 {% endblock %}

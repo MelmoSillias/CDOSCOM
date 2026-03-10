@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Repository\ActualiteRepository;
+use App\Repository\PersonnelRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class SectionController extends AbstractController
@@ -21,15 +24,17 @@ final class SectionController extends AbstractController
     }
 
     #[Route('/equipe', name: 'section_team')]
-    public function team(): Response
+    public function team(PersonnelRepository $personnelRepository): Response
     {
-        return $this->render('sections/team.html.twig');
+        return $this->render('sections/team.html.twig', [
+            'personnels' => $personnelRepository->findOrdered(),
+        ]);
     }
 
-    #[Route('/actualites', name: 'section_news')]
-    public function news(): Response
+    #[Route('/actualites-section', name: 'section_news')]
+    public function news(): RedirectResponse
     {
-        return $this->render('sections/news.html.twig');
+        return $this->redirectToRoute('news_index');
     }
 
     #[Route('/rendez-vous', name: 'section_appointment')]

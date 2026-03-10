@@ -12,7 +12,7 @@
   {% block stylesheets %}{% endblock %}
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-slate-100">
 
 <div class="min-h-screen flex flex-col">
 
@@ -53,13 +53,33 @@
             </span>
           </a>
 
-          <a href="#" class="{{ linkBase }} text-gray-300 hover:bg-white/10 hover:text-white">
-            Projets
-          </a>
+           <a href="{{ path('admin_actualites') }}"
+             aria-current="{{ active_page == 'actualites' ? 'page' : false }}"
+             class="{{ linkBase }}
+             {{ active_page == 'actualites'
+               ? 'bg-gray-900 text-white'
+               : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
+            Actualites
+           </a>
 
-          <a href="#" class="{{ linkBase }} text-gray-300 hover:bg-white/10 hover:text-white">
-            Calendrier
-          </a>
+           <a href="{{ path('admin_personnels') }}"
+             aria-current="{{ active_page == 'personnels' ? 'page' : false }}"
+             class="{{ linkBase }}
+             {{ active_page == 'personnels'
+               ? 'bg-gray-900 text-white'
+               : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
+            Personnels
+           </a>
+
+           <a href="{{ path('admin_configurations') }}"
+             aria-current="{{ active_page == 'configurations' ? 'page' : false }}"
+             class="{{ linkBase }}
+             {{ active_page == 'configurations'
+               ? 'bg-gray-900 text-white'
+               : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
+            Configurations
+           </a>
+ 
         </div>
 
         <!-- Right actions -->
@@ -129,15 +149,27 @@
               : 'hover:bg-gray-100' }}">
           Messages
         </a>
-
-        <a href="#" class="{{ mobileBase }} hover:bg-gray-100">Projets</a>
-        <a href="#" class="{{ mobileBase }} hover:bg-gray-100">Calendrier</a>
+          <a href="{{ path('admin_actualites') }}"
+            class="{{ mobileBase }}
+            {{ active_page == 'actualites'
+              ? 'bg-gray-900 text-white'
+              : 'hover:bg-gray-100' }}">Actualites</a>
+          <a href="{{ path('admin_personnels') }}"
+            class="{{ mobileBase }}
+            {{ active_page == 'personnels'
+              ? 'bg-gray-900 text-white'
+              : 'hover:bg-gray-100' }}">Personnels</a>
+          <a href="{{ path('admin_configurations') }}"
+            class="{{ mobileBase }}
+            {{ active_page == 'configurations'
+              ? 'bg-gray-900 text-white'
+              : 'hover:bg-gray-100' }}">Configurations</a>
       </div>
     </div>
   </nav>
 
   <!-- MAIN -->
-  <main class="flex-1 p-4">
+  <main class="flex-1 p-4 md:p-6">
     {% block body %}{% endblock %}
   </main>
 

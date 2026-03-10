@@ -4,50 +4,32 @@
             <h2 class="text-3xl font-bold text-blue-900 mb-4">Actualités</h2>
             <p class="text-gray-600 max-w-2xl mx-auto">Restez informés des dernières nouvelles de notre cabinet.</p>
         </div>
+        {% set featured = actualites|default([]) %}
+        {% set firstNews = featured|first %}
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="lg:w-2/3">
                 <div class="relative bg-white rounded-xl shadow-lg overflow-hidden">
                     <div id="news-carousel" class="relative w-full m-0" data-carousel="slide">
                         <div class="relative h-[520px] overflow-hidden rounded-lg">
-                            <div class="duration-700 ease-in-out" data-carousel-item="active">
-                                <div class="flex flex-col">
-                                    <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Nouvelle technologie" class="w-full h-64 md:h-80 object-cover">
-                                    <div class="p-6">
-                                        <span class="text-blue-600 text-sm">15 Juin 2023</span>
-                                        <h3 class="text-xl font-bold text-blue-900 my-2">Nouvel équipement de blanchiment</h3>
-                                        <p class="text-gray-600">Nous avons le plaisir de vous annoncer l'acquisition d'un nouveau système de blanchiment dentaire dernière génération, plus efficace et plus confortable.</p>
-                                        <div class="mt-3">
-                                            <a href="{{ path('news_show', { slug: 'nouvel-equipement-blanchiment' }) }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-50 text-blue-800 font-semibold border border-blue-100 hover:bg-blue-800 hover:text-white transition shadow-sm">Voir</a>
+                            {% for item in featured %}
+                                <div class="{{ loop.first ? 'duration-700 ease-in-out' : 'hidden duration-700 ease-in-out' }}" data-carousel-item="{{ loop.first ? 'active' : '' }}">
+                                    <div class="flex flex-col">
+                                        <img src="{{ item.image }}" alt="{{ item.titre }}" class="w-full h-64 md:h-80 object-cover">
+                                        <div class="p-6">
+                                            <span class="text-blue-600 text-sm">{{ item.datePublication|date('d/m/Y H:i') }}</span>
+                                            <h3 class="text-xl font-bold text-blue-900 my-2">{{ item.titre }}</h3>
+                                            <p class="text-gray-600">{{ item.contenu|striptags|slice(0, 180) ~ (item.contenu|striptags|length > 180 ? '...' : '') }}</p>
+                                            <div class="mt-3">
+                                                <a href="{{ path('news_show', { slug: item.slug }) }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-50 text-blue-800 font-semibold border border-blue-100 hover:bg-blue-800 hover:text-white transition shadow-sm">Voir</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                                <div class="flex flex-col">
-                                    <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Horaires d'été" class="w-full h-64 md:h-80 object-cover">
-                                    <div class="p-6">
-                                        <span class="text-blue-600 text-sm">1er Juillet 2023</span>
-                                        <h3 class="text-xl font-bold text-blue-900 my-2">Horaires d'été</h3>
-                                        <p class="text-gray-600">Pendant les mois de juillet et août, le cabinet sera ouvert du lundi au vendredi de 8h à 18h. Fermeture exceptionnelle du 10 au 15 août.</p>
-                                        <div class="mt-3">
-                                            <a href="{{ path('news_show', { slug: 'horaires-ete' }) }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-50 text-blue-800 font-semibold border border-blue-100 hover:bg-blue-800 hover:text-white transition shadow-sm">Voir</a>
-                                        </div>
-                                    </div>
+                            {% else %}
+                                <div class="duration-700 ease-in-out" data-carousel-item="active">
+                                    <div class="h-64 md:h-80 flex items-center justify-center p-6 text-gray-600">Aucune actualite publiee pour le moment.</div>
                                 </div>
-                            </div>
-                            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                                <div class="flex flex-col">
-                                    <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Prévention" class="w-full h-64 md:h-80 object-cover">
-                                    <div class="p-6">
-                                        <span class="text-blue-600 text-sm">5 Septembre 2023</span>
-                                        <h3 class="text-xl font-bold text-blue-900 my-2">Campagne de prévention</h3>
-                                        <p class="text-gray-600">En septembre, profitez d'un bilan dentaire gratuit pour toute la famille. Prenez rendez-vous dès maintenant pour votre check-up.</p>
-                                        <div class="mt-3">
-                                            <a href="{{ path('news_show', { slug: 'campagne-prevention' }) }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-50 text-blue-800 font-semibold border border-blue-100 hover:bg-blue-800 hover:text-white transition shadow-sm">Voir</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
 
                         <button type="button" class="absolute top-1/2 left-4 z-30 flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-md hover:bg-blue-100 transition" data-carousel-prev>

@@ -1,0 +1,88 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Configurations - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="p-6 space-y-6">
+    <div class="rounded-2xl bg-gradient-to-r from-cyan-700 to-blue-700 text-white p-6 shadow-lg">
+        <h1 class="text-2xl font-bold">Configurations du site</h1>
+        <p class="text-cyan-100 mt-1">Centralisez les liens, contacts, horaires et images de galerie.</p>
+    </div>
+
+    <form id="configuration-form" class="space-y-6">
+        <section class="bg-white shadow-md border border-slate-200 rounded-2xl p-5 space-y-4">
+            <h2 class="text-lg font-semibold text-slate-900">Liens reseaux sociaux</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <input id="cfg-facebook" placeholder="Facebook" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+                <input id="cfg-instagram" placeholder="Instagram" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+                <input id="cfg-linkedin" placeholder="LinkedIn" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+                <input id="cfg-tiktok" placeholder="TikTok" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+                <input id="cfg-whatsapp" placeholder="WhatsApp" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+            </div>
+        </section>
+
+        <section class="bg-white shadow-md border border-slate-200 rounded-2xl p-5 space-y-4">
+            <h2 class="text-lg font-semibold text-slate-900">Coordonnees</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <input id="cfg-phone-1" placeholder="Telephone 1" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+                <input id="cfg-phone-2" placeholder="Telephone 2" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+                <input id="cfg-email" placeholder="Email" class="border border-slate-300 rounded-xl px-3 py-2 md:col-span-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+                <textarea id="cfg-address" placeholder="Adresse" class="border border-slate-300 rounded-xl px-3 py-2 md:col-span-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500" rows="3"></textarea>
+            </div>
+        </section>
+
+        <section class="bg-white shadow-md border border-slate-200 rounded-2xl p-5 space-y-4">
+            <h2 class="text-lg font-semibold text-slate-900">Horaires</h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <input id="cfg-hours-week" placeholder="Lundi-vendredi" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+                <input id="cfg-hours-sat" placeholder="Samedi" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+                <input id="cfg-hours-sun" placeholder="Dimanche" class="border border-slate-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+            </div>
+        </section>
+
+        <section class="bg-white shadow-md border border-slate-200 rounded-2xl p-5 space-y-4">
+            <h2 class="text-lg font-semibold text-slate-900">Galerie</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label class="text-sm text-slate-700">Image 1</label>
+                    <input id="cfg-gallery-file-1" type="file" accept="image/*" class="w-full border border-dashed border-slate-300 rounded-xl px-3 py-2 bg-slate-50">
+                    <input id="cfg-gallery-existing-1" type="hidden">
+                    <img id="cfg-gallery-preview-1" class="hidden w-full h-36 object-cover rounded-xl border border-slate-200" alt="Apercu image 1">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm text-slate-700">Image 2</label>
+                    <input id="cfg-gallery-file-2" type="file" accept="image/*" class="w-full border border-dashed border-slate-300 rounded-xl px-3 py-2 bg-slate-50">
+                    <input id="cfg-gallery-existing-2" type="hidden">
+                    <img id="cfg-gallery-preview-2" class="hidden w-full h-36 object-cover rounded-xl border border-slate-200" alt="Apercu image 2">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm text-slate-700">Image 3</label>
+                    <input id="cfg-gallery-file-3" type="file" accept="image/*" class="w-full border border-dashed border-slate-300 rounded-xl px-3 py-2 bg-slate-50">
+                    <input id="cfg-gallery-existing-3" type="hidden">
+                    <img id="cfg-gallery-preview-3" class="hidden w-full h-36 object-cover rounded-xl border border-slate-200" alt="Apercu image 3">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm text-slate-700">Image 4</label>
+                    <input id="cfg-gallery-file-4" type="file" accept="image/*" class="w-full border border-dashed border-slate-300 rounded-xl px-3 py-2 bg-slate-50">
+                    <input id="cfg-gallery-existing-4" type="hidden">
+                    <img id="cfg-gallery-preview-4" class="hidden w-full h-36 object-cover rounded-xl border border-slate-200" alt="Apercu image 4">
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white shadow-md border border-slate-200 rounded-2xl p-5 space-y-4">
+            <h2 class="text-lg font-semibold text-slate-900">Email de reception des messages</h2>
+            <input id="cfg-mail-recipient" placeholder="Email destinataire" class="border border-slate-300 rounded-xl px-3 py-2 w-full focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500">
+        </section>
+
+        <div class="flex justify-end">
+            <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 shadow">Enregistrer la configuration</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset('assets/js/admin_configurations.js') }}"></script>
+{% endblock %}

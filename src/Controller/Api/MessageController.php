@@ -38,6 +38,10 @@ class MessageController extends AbstractController
             return $this->json(['error' => 'Le message ne peut pas être vide.'], 400);
         }
 
+        if (!isset($data['phone']) || mb_strlen(trim((string) $data['phone'])) < 6) {
+            return $this->json(['error' => 'Le numero de telephone est obligatoire et doit contenir au moins 6 caracteres.'], 400);
+        }
+
         try {
             $message = $this->messageService->createMessage($data);
             return $this->json([
@@ -55,8 +59,19 @@ class MessageController extends AbstractController
     public function count(Request $request): JsonResponse
     {
         $status = $request->query->get('status');
+        if ($status === 'pending') {
+            return $this->json(['count' => $this->messageService->countMessages('unread')]);
+        }
+
         $count = $this->messageService->countMessages($status);
+
         return $this->json(['count' => $count]);
+    }
+
+    #[Route('/stats', name: 'api_message_stats', methods: ['GET'])]
+    public function stats(): JsonResponse
+    {
+        return $this->json($this->messageService->getStats());
     }
 
     #[Route('', name: 'api_message_list', methods: ['GET'])]
@@ -80,6 +95,7 @@ class MessageController extends AbstractController
                 'content' => $message->getContent(),
                 'type' => $message->getType(),
                 'status' => $message->getStatus(),
+                'statutEnvoiMail' => $message->getStatutEnvoiMail(),
                 'createdAt' => $message->getCreatedAt()->format('Y-m-d H:i:s'),
             ];
         }, $messages);
@@ -107,6 +123,7 @@ class MessageController extends AbstractController
             'content' => $message->getContent(),
             'type' => $message->getType(),
             'status' => $message->getStatus(),
+            'statutEnvoiMail' => $message->getStatutEnvoiMail(),
             'createdAt' => $message->getCreatedAt()->format('Y-m-d H:i:s'),
         ]);
     }
@@ -138,6 +155,22 @@ class MessageController extends AbstractController
         try {
             $this->messageService->deleteMessage($id);
             return $this->json(['message' => 'Message supprimé avec succès.']);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    #[Route('/{id}/retry-mail', name: 'api_message_retry_mail', methods: ['POST'])]
+    public function retryMail(int $id): JsonResponse
+    {
+        try {
+            $message = $this->messageService->retryMailDelivery($id);
+
+            return $this->json([
+                'message' => 'Tentative d\'envoi relancee.',
+                'id' => $message->getId(),
+                'statutEnvoiMail' => $message->getStatutEnvoiMail(),
+            ]);
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], 400);
         }

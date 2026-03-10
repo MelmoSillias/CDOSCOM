@@ -1,4 +1,7 @@
 <section id="appointment" class="py-20 bg-blue-800 text-white">
+    {% set siteConfig = site_configuration() %}
+    {% set contact = siteConfig.contact ?? {} %}
+    {% set openingHours = siteConfig.opening_hours ?? {} %}
     <div class="container mx-auto px-6 md:px-12">
         <div class="flex flex-col md:flex-row items-center">
             <!-- Section gauche -->
@@ -11,8 +14,8 @@
                             <i class="fas fa-phone"></i>
                         </div>
                         <div>
-                            <p class="font-semibold">+223 84 07 55 18 / +223 44 56 94 39</p>
-                            <p class="text-blue-200">Lundi - Vendredi : 8h - 20h | Samedi : 8h - 16h<br>Dimanche : Fermé</p>
+                            <p class="font-semibold">{{ (contact.phones ?? ['+223 84 07 55 18', '+223 44 56 94 39'])|join(' / ') }}</p>
+                            <p class="text-blue-200">Lundi - Vendredi : {{ openingHours['lundi-vendredi'] ?? '8h - 21h' }} | Samedi : {{ openingHours.samedi ?? '8h - 16h' }}<br>Dimanche : {{ openingHours.dimanche ?? 'Ferme' }}</p>
                         </div>
                     </div>
                     <div class="flex items-center">
@@ -20,7 +23,7 @@
                             <i class="fas fa-envelope"></i>
                         </div>
                         <div>
-                            <p class="font-semibold">contact@cdos-dentaire.fr</p>
+                            <p class="font-semibold">{{ contact.email ?? 'contact@cdos-dentaire.fr' }}</p>
                             <p class="text-blue-200">Réponse sous 24h</p>
                         </div>
                     </div>
@@ -299,22 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Validation du téléphone selon le pays
-        const selectedCode = codeSpan.textContent;
-        let phoneRegex;
-        let phoneFormat;
-        switch (selectedCode) {
-            case '+223': phoneRegex = /^\+223\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/; phoneFormat = '+223 XX XX XX XX'; break; // Mali
-            case '+221': phoneRegex = /^\+221\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/; phoneFormat = '+221 XX XX XX XX'; break; // Sénégal
-            case '+225': phoneRegex = /^\+225\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/; phoneFormat = '+225 XX XX XX XX'; break; // Côte d'Ivoire
-            case '+1': phoneRegex = /^\+1\s?\d{3}\s?\d{3}\s?\d{4}$/; phoneFormat = '+1 XXX XXX XXXX'; break; // USA/Canada
-            case '+44': phoneRegex = /^\+44\s?\d{4}\s?\d{6}$/; phoneFormat = '+44 XXXX XXXXXX'; break; // UK
-            case '+33': phoneRegex = /^\+33\s?\d{1}\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/; phoneFormat = '+33 X XX XX XX XX'; break; // France
-            default: phoneRegex = /^.+$/; phoneFormat = 'format générique'; break;
-        }
-
-        if (!phoneRegex.test(data.phone)) {
-            showModal('error', 'Erreur', `Veuillez entrer un numéro de téléphone valide pour le pays sélectionné (format : ${phoneFormat}).`);
+        if (!data.phone || data.phone.trim().length < 6) {
+            showModal('error', 'Erreur', 'Veuillez entrer un numero de telephone valide (au moins 6 caracteres).');
             return;
         }
 

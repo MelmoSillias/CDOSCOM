@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Repository\MessageRepository;
+use App\Service\MessageService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,18 +10,15 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/messages', name: 'admin_messages')]
 class MessageController extends AbstractController
 {
-    public function __invoke(MessageRepository $messageRepository): Response
+    public function __invoke(MessageService $messageService): Response
     {
-        $totalMessages = $messageRepository->count([]);
-        $pendingMessages = $messageRepository->count(['status' => 'unread']);
-        $readMessages = $messageRepository->count(['status' => 'read']);
-        $respondedMessages = $messageRepository->count(['status' => 'responded']);
+        $stats = $messageService->getStats();
 
         return $this->render('admin/messages/index.html.twig', [
-            'totalMessages' => $totalMessages,
-            'unreadMessages' => $pendingMessages,
-            'readMessages' => $readMessages,
-            'respondedMessages' => $respondedMessages,
+            'totalMessages' => $stats['totalMessages'],
+            'unreadMessages' => $stats['unreadMessages'],
+            'readMessages' => $stats['readMessages'],
+            'respondedMessages' => $stats['respondedMessages'],
             'active_page' => 'messages',
         ]);
     }

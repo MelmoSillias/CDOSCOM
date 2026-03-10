@@ -6,50 +6,31 @@
         </div>
  
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 team-card transition duration-300 animate-fadeIn">
-                <div class="flex justify-center mb-6">
-                    <a href="{{ asset('assets/img/DrOusmaneSow_min.jpeg') }}" class="glightbox" title="Dr. Ousmane Sow">
-                        <img src="{{ asset('assets/img/DrOusmaneSow_min.jpeg') }}" alt="Dr. Ousmane Sow" class="w-32 h-32 rounded-full object-cover border-4 border-blue-100 team-img">
-                    </a>
+            {% for membre in personnels|default([]) %}
+                <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 team-card transition duration-300 animate-fadeIn">
+                    <div class="flex justify-center mb-6">
+                        <a href="{{ membre.photo }}" class="glightbox" title="{{ membre.prenom }} {{ membre.nom }}">
+                            <img src="{{ membre.photo }}" alt="{{ membre.prenom }} {{ membre.nom }}" class="w-32 h-32 rounded-full object-cover border-4 border-blue-100 team-img">
+                        </a>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center text-blue-800 mb-2">{{ membre.prenom }} {{ membre.nom }}</h3>
+                    <p class="text-blue-600 text-center mb-4">{{ membre.poste }}</p>
+                    <p class="text-gray-600 text-center">{{ membre.description|slice(0, 130) ~ (membre.description|length > 130 ? '...' : '') }}</p>
+                    <div class="flex justify-center mt-4 space-x-3">
+                        {% if membre.liensSociaux['LinkedIn'] is defined and membre.liensSociaux['LinkedIn'] != '' %}
+                            <a href="{{ membre.liensSociaux['LinkedIn'] }}" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                        {% endif %}
+                        {% if membre.liensSociaux['Twitter'] is defined and membre.liensSociaux['Twitter'] != '' %}
+                            <a href="{{ membre.liensSociaux['Twitter'] }}" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                        {% endif %}
+                        {% if membre.liensSociaux['Facebook'] is defined and membre.liensSociaux['Facebook'] != '' %}
+                            <a href="{{ membre.liensSociaux['Facebook'] }}" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i></a>
+                        {% endif %}
+                    </div>
                 </div>
-                <h3 class="text-xl font-semibold text-center text-blue-800 mb-2">Dr. Ousmane Sow</h3>
-                <p class="text-blue-600 text-center mb-4">Dentiste</p>
-                <p class="text-gray-600 text-center"></p>
-                <div class="flex justify-center mt-4 space-x-3">
-                    <a href="#" class="text-blue-600 hover:text-blue-800"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="text-blue-600 hover:text-blue-800"><i class="fas fa-envelope"></i></a>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 team-card transition duration-300 animate-fadeIn delay-200">
-                <div class="flex justify-center mb-6">
-                    <a href="{{ asset('assets/img/DrToure_min.jpeg') }}" class="glightbox" title="Dr. Ousmane Touré">
-                        <img src="{{ asset('assets/img/DrToure_min.jpeg') }}" alt="Dr. Toure" class="w-32 h-32 rounded-full object-cover border-4 border-blue-100 team-img">
-                    </a>
-                </div>
-                <h3 class="text-xl font-semibold text-center text-blue-800 mb-2">Dr. Ousmane Touré</h3>
-                <p class="text-blue-600 text-center mb-4">Dentiste</p>
-                <p class="text-gray-600 text-center"></p>
-                <div class="flex justify-center mt-4 space-x-3">
-                    <a href="#" class="text-blue-600 hover:text-blue-800"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="text-blue-600 hover:text-blue-800"><i class="fas fa-envelope"></i></a>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 team-card transition duration-300 animate-fadeIn delay-400">
-                <div class="flex justify-center mb-6">
-                    <a href="{{ asset('assets/img/Inf_min.jpeg') }}" class="glightbox" title="Mlle Ada KAREMBE">
-                        <img src="{{ asset('assets/img/Inf_min.jpeg') }}" alt="Mlle Ada Karembe" class="w-32 h-32 rounded-full object-cover border-4 border-blue-100 team-img">
-                    </a>
-                </div>
-                <h3 class="text-xl font-semibold text-center text-blue-800 mb-2">Mlle Ada KAREMBE</h3>
-                <p class="text-blue-600 text-center mb-4">Aide Soignante</p>
-                <p class="text-gray-600 text-center"></p>
-                <div class="flex justify-center mt-4 space-x-3">
-                    <a href="#" class="text-blue-600 hover:text-blue-800"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="text-blue-600 hover:text-blue-800"><i class="fas fa-envelope"></i></a>
-                </div>
-            </div>
+            {% else %}
+                <div class="col-span-full text-center text-gray-600">Aucun personnel configure pour le moment.</div>
+            {% endfor %}
         </div>
     </div>
 </section>

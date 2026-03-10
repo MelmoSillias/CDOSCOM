@@ -28,30 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const appointmentForm = document.getElementById('appointment-form');
-    const successModal = document.getElementById('success-modal');
-    const closeModal = document.getElementById('close-modal');
-
-    if (appointmentForm && successModal) {
-        appointmentForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            appointmentForm.reset();
-            successModal.classList.remove('hidden');
-        });
-    }
-
-    if (closeModal && successModal) {
-        closeModal.addEventListener('click', () => {
-            successModal.classList.add('hidden');
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === successModal) {
-                successModal.classList.add('hidden');
-            }
-        });
-    }
-
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener('click', (e) => {
             const targetId = anchor.getAttribute('href');

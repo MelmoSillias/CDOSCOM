@@ -1,0 +1,31 @@
+{
+    "social_links": {
+        "facebook": "https://facebook.com/",
+        "instagram": "https://instagram.com/",
+        "linkedin": "https://linkedin.com/",
+        "tiktok": "https://www.tiktok.com/discover/cabinet-dentaire-%C3%A0-bamako?is_from_webapp=1&sender_device=pc",
+        "whatsapp": "https://wa.me/22384075518"
+    },
+    "contact": {
+        "phones": [
+            "+223 84 07 55 18",
+            "+223 44 56 94 39"
+        ],
+        "email": "contact@cdos-dentaire.fr",
+        "address": "A 100m du feu de Garantiguibougou, en face de la voie de Garantiguibougou, Rue: 426, Estee 192"
+    },
+    "opening_hours": {
+        "lundi-vendredi": "8h - 21h",
+        "samedi": "8h - 16h",
+        "dimanche": "Ferme"
+    },
+    "gallery_images": [
+        "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=1470&q=80",
+        "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=1470&q=80",
+        "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=1470&q=80",
+        "/uploads/gallery/20260310151355_f19873796d6d.jpg"
+    ],
+    "mail": {
+        "recipient": "contact@cdos-dentaire.fr"
+    }
+}

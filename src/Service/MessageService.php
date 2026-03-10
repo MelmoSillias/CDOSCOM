@@ -5,6 +5,9 @@ namespace App\Service;
 use App\Entity\Message;
 use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MessageService
@@ -12,12 +15,16 @@ class MessageService
     private EntityManagerInterface $entityManager;
     private MessageRepository $messageRepository;
     private ValidatorInterface $validator;
+    private MailerInterface $mailer;
+    private SiteConfigurationService $siteConfigurationService;
 
-    public function __construct(EntityManagerInterface $entityManager, MessageRepository $messageRepository, ValidatorInterface $validator)
+    public function __construct(EntityManagerInterface $entityManager, MessageRepository $messageRepository, ValidatorInterface $validator, MailerInterface $mailer, SiteConfigurationService $siteConfigurationService)
     {
         $this->entityManager = $entityManager;
         $this->messageRepository = $messageRepository;
         $this->validator = $validator;
+        $this->mailer = $mailer;
+        $this->siteConfigurationService = $siteConfigurationService;
     }
 
     public function createMessage(array $data): Message
@@ -63,6 +70,7 @@ class MessageService
         $message->setContent($data['message']);
         $message->setType($type);
         $message->setStatus('unread');
+        $message->setStatutEnvoiMail('pending');
 
         $errors = $this->validator->validate($message);
         if (count($errors) > 0) {
@@ -75,6 +83,8 @@ class MessageService
 
         $this->entityManager->persist($message);
         $this->entityManager->flush();
+
+        $this->trySendNotificationEmail($message);
 
         return $message;
     }
@@ -122,6 +132,19 @@ class MessageService
         return $this->messageRepository->count([]);
     }
 
+    public function getStats(): array
+    {
+        return [
+            'totalMessages' => $this->messageRepository->count([]),
+            'unreadMessages' => $this->messageRepository->count(['status' => 'unread']),
+            'readMessages' => $this->messageRepository->count(['status' => 'read']),
+            'respondedMessages' => $this->messageRepository->count(['status' => 'responded']),
+            'mailPending' => $this->messageRepository->count(['statutEnvoiMail' => 'pending']),
+            'mailSent' => $this->messageRepository->count(['statutEnvoiMail' => 'sent']),
+            'mailFailed' => $this->messageRepository->count(['statutEnvoiMail' => 'failed']),
+        ];
+    }
+
     public function updateMessage(int $id, array $data): Message
     {
         $message = $this->messageRepository->find($id);
@@ -146,5 +169,58 @@ class MessageService
 
         $this->entityManager->remove($message);
         $this->entityManager->flush();
+    }
+
+    public function retryMailDelivery(int $id): Message
+    {
+        $message = $this->messageRepository->find($id);
+        if (!$message) {
+            throw new \Exception('Message not found');
+        }
+
+        $this->trySendNotificationEmail($message);
+
+        return $message;
+    }
+
+    private function trySendNotificationEmail(Message $message): void
+    {
+        $recipient = $this->siteConfigurationService->getMailRecipient();
+        if ($recipient === null || trim($recipient) === '') {
+            $message->setStatutEnvoiMail('failed');
+            $this->entityManager->flush();
+
+            return;
+        }
+
+        $email = (new Email())
+            ->from('no-reply@cdos.local')
+            ->to($recipient)
+            ->subject(sprintf('Nouveau message (%s) - %s', $message->getType(), $message->getEmail()))
+            ->text($this->buildMailBody($message));
+
+        try {
+            $this->mailer->send($email);
+            $message->setStatutEnvoiMail('sent');
+        } catch (TransportExceptionInterface|\Throwable $exception) {
+            $message->setStatutEnvoiMail('failed');
+        }
+
+        $this->entityManager->flush();
+    }
+
+    private function buildMailBody(Message $message): string
+    {
+        return sprintf(
+            "Nouveau message recu\n\nNom: %s %s\nEmail: %s\nTelephone: %s\nType: %s\nSujet: %s\nDate RDV: %s\nMessage:\n%s",
+            $message->getFirstName() ?? '',
+            $message->getLastName() ?? '',
+            $message->getEmail() ?? '',
+            $message->getPhone() ?? 'N/A',
+            $message->getType() ?? '',
+            $message->getSubject() ?? 'N/A',
+            $message->getAppointmentDate()?->format('Y-m-d') ?? 'N/A',
+            $message->getContent() ?? ''
+        );
     }
 }

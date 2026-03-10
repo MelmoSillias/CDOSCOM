@@ -8,33 +8,28 @@
         </div>
         <div class="max-w-5xl mx-auto">
             <div class="mb-6">
-                <div class="text-blue-700 text-sm mb-2">{{ entry.date }}</div>
-                <h1 class="text-3xl font-bold text-blue-900">{{ entry.title }}</h1>
+                <div class="text-blue-700 text-sm mb-2">{{ entry.datePublication|date('d/m/Y H:i') }}</div>
+                <h1 class="text-3xl font-bold text-blue-900">{{ entry.titre }}</h1>
             </div>
             <div class="rounded-2xl overflow-hidden shadow-md mb-6">
-                <img src="{{ entry.image }}" alt="{{ entry.title }}" class="w-full h-72 object-cover">
+                <img src="{{ entry.image }}" alt="{{ entry.titre }}" class="w-full h-72 object-cover">
             </div>
             <div class="bg-blue-50 rounded-2xl p-6 space-y-4">
-                <p class="text-gray-700">{{ entry.content }}</p>
-                <ul class="list-disc list-inside text-gray-700 space-y-2">
-                    {% for bullet in entry.bullets %}
-                        <li>{{ bullet }}</li>
-                    {% endfor %}
-                </ul>
+                <div class="text-gray-700 leading-relaxed">{{ entry.contenu|raw }}</div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-4">
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
                 <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
                     <p class="text-xs uppercase tracking-[0.2em] text-blue-500">Pourquoi c'est important</p>
-                    <p class="text-gray-700 text-sm">Cette actualité impacte votre confort au cabinet et prépare vos visites à venir.</p>
+                    <p class="text-gray-700 text-sm">{{ entry.faq['Pourquoi cette actualite ?'] ?? '' }}</p>
                 </div>
                 <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
                     <p class="text-xs uppercase tracking-[0.2em] text-blue-500">Ce que vous pouvez faire</p>
-                    <p class="text-gray-700 text-sm">Anticipez vos rendez-vous, suivez les consignes partagées et contactez-nous pour toute question.</p>
+                    <p class="text-gray-700 text-sm">{{ entry.faq['Ce que vous pouvez faire :'] ?? '' }}</p>
                 </div>
                 <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
                     <p class="text-xs uppercase tracking-[0.2em] text-blue-500">Rappel pratique</p>
-                    <p class="text-gray-700 text-sm">Gardez nos coordonnées à portée de main et vérifiez les horaires mis à jour sur le site.</p>
+                    <p class="text-gray-700 text-sm">{{ entry.faq['Conseil Pratique'] ?? '' }}</p>
                 </div>
             </div>
 

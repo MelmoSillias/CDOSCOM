@@ -29,8 +29,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 filteredMessages = data.data || [];
                 renderTable();
                 renderPagination();
+                refreshStats();
             })
             .catch(error => console.error('Error loading messages:', error));
+    }
+
+    function refreshStats() {
+        fetch('/api/messages/stats')
+            .then(response => response.json())
+            .then(stats => {
+                setText('#stat-total', stats.totalMessages);
+                setText('#stat-unread', stats.unreadMessages);
+                setText('#stat-read', stats.readMessages);
+                setText('#stat-responded', stats.respondedMessages);
+            })
+            .catch(() => {});
+    }
+
+    function setText(selector, value) {
+        const el = document.querySelector(selector);
+        if (el) {
+            el.textContent = value ?? 0;
+        }
     }
 
     // Render table rows
@@ -46,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
             row.className = 'hover:bg-gray-50 transition-colors duration-150';
 
             const statusBadge = getStatusBadge(message.status);
+            const mailStatusBadge = getMailStatusBadge(message.statutEnvoiMail);
 
             row.innerHTML = `
                 <td class="px-4 md:px-8 py-5 font-medium text-gray-900">${message.id}</td>
@@ -54,12 +75,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td class="px-4 md:px-8 py-5 text-gray-700 hidden md:table-cell">${message.phone || ''}</td>
                 <td class="px-4 md:px-8 py-5 text-gray-700 capitalize">${message.type}</td>
                 <td class="px-4 md:px-8 py-5">${statusBadge}</td>
+                <td class="px-4 md:px-8 py-5">${mailStatusBadge}</td>
                 <td class="px-4 md:px-8 py-5 text-gray-600 hidden lg:table-cell">${message.createdAt}</td>
                 <td class="px-4 md:px-8 py-5">${getActionsHtml(message)}</td>
             `;
 
             tableBody.appendChild(row);
         });
+    }
+
+    function getMailStatusBadge(status) {
+        if (status === 'sent') {
+            return '<span class="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-green-100 text-green-800 rounded-full border border-green-200">Envoye</span>';
+        }
+        if (status === 'failed') {
+            return '<span class="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-red-100 text-red-800 rounded-full border border-red-200">Echec</span>';
+        }
+
+        return '<span class="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-gray-100 text-gray-800 rounded-full border border-gray-200">En attente</span>';
     }
 
     // Get status badge HTML
@@ -105,6 +138,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
             </div>`;
+
+        if (message.statutEnvoiMail === 'failed') {
+            actions += `<button class="retry-mail-btn mt-2 bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded" data-id="${message.id}">Reessayer mail</button>`;
+        }
 
         return actions;
     }
@@ -168,6 +205,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mark as read and open reply modal
     tableBody.addEventListener('click', function(e) {
+        if (e.target.closest('.retry-mail-btn')) {
+            const id = e.target.closest('.retry-mail-btn').dataset.id;
+            fetch(`/api/messages/${id}/retry-mail`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showNotification(data.error, 'error');
+                        return;
+                    }
+                    loadMessages();
+                    showNotification('Nouvelle tentative d\'envoi du mail effectuee', 'success');
+                });
+            return;
+        }
+
         if (e.target.closest('.mark-read-btn')) {
             const id = e.target.closest('.mark-read-btn').dataset.id;
 

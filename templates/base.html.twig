@@ -17,6 +17,10 @@
         {% endblock %}
     </head>
             <body class="bg-white text-gray-800">
+                {% set siteConfig = site_configuration() %}
+                {% set contact = siteConfig.contact ?? {} %}
+                {% set socialLinks = siteConfig.social_links ?? {} %}
+                {% set openingHours = siteConfig.opening_hours ?? {} %}
                 <div id="loader" class="fixed inset-0 flex items-center justify-center bg-white z-50">
                     <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-800"></div>
                 </div>
@@ -39,7 +43,7 @@
                                 <a href="{{ path('section_about') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_about' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_about' ? 'page' : 'false' }}">À propos</a>
                                 <a href="{{ path('section_team') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_team' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_team' ? 'page' : 'false' }}">Équipe</a>
                                 <a href="{{ path('section_services') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_services' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_services' ? 'page' : 'false' }}">Services</a>
-                                <a href="{{ path('section_news') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_news' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_news' ? 'page' : 'false' }}">Actualités</a> 
+                                <a href="{{ path('news_index') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'news_index' ? activeClass : '' }}" aria-current="{{ currentRoute == 'news_index' ? 'page' : 'false' }}">Actualités</a> 
                                 <a href="{{ path('section_location') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_location' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_location' ? 'page' : 'false' }}">Localisation</a>
                                 <a href="{{ path('section_contact') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_contact' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_contact' ? 'page' : 'false' }}">Contact</a>
                                 <a href="{{ path('section_appointment') }}" class="ml-4 bg-white text-blue-800 px-6 py-2 rounded-full font-medium hover:bg-blue-100 transition whitespace-nowrap">Prendre RDV</a>
@@ -58,7 +62,7 @@
                         <a href="{{ path('section_about') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_about' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_about' ? 'page' : 'false' }}">À propos</a>
                         <a href="{{ path('section_team') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_team' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_team' ? 'page' : 'false' }}">Équipe</a>
                         <a href="{{ path('section_services') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_services' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_services' ? 'page' : 'false' }}">Services</a>
-                        <a href="{{ path('section_news') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_news' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_news' ? 'page' : 'false' }}">Actualités</a>
+                        <a href="{{ path('news_index') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'news_index' ? activeClass : '' }}" aria-current="{{ currentRoute == 'news_index' ? 'page' : 'false' }}">Actualités</a>
                         <a href="{{ path('section_appointment') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_appointment' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_appointment' ? 'page' : 'false' }}">Rendez-vous</a>
                         <a href="{{ path('section_location') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_location' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_location' ? 'page' : 'false' }}">Localisation</a>
                         <a href="{{ path('section_contact') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_contact' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_contact' ? 'page' : 'false' }}">Contact</a>
@@ -98,15 +102,15 @@
                                 <ul class="space-y-2">
                                     <li class="flex items-start">
                                         <i class="fas fa-map-marker-alt mt-1 mr-2 text-blue-300"></i>
-                                        <span class="text-blue-200">À 100m du feu de Garantiguibougou, en face de la voie de Garantiguibougou | Rue: 426, Estée 192</span>
+                                        <span class="text-blue-200">{{ contact.address ?? 'A 100m du feu de Garantiguibougou, en face de la voie de Garantiguibougou | Rue: 426, Estee 192' }}</span>
                                     </li>
                                     <li class="flex items-center">
                                         <i class="fas fa-phone mr-2 text-blue-300"></i>
-                                        <span class="text-blue-200">+223 84 07 55 18 / +223 44 56 94 39</span>
+                                        <span class="text-blue-200">{{ (contact.phones ?? ['+223 84 07 55 18', '+223 44 56 94 39'])|join(' / ') }}</span>
                                     </li>
                                     <li class="flex items-center">
                                         <i class="fas fa-envelope mr-2 text-blue-300"></i>
-                                        <span class="text-blue-200">contact@cdos-dentaire.fr</span>
+                                        <span class="text-blue-200">{{ contact.email ?? 'contact@cdos-dentaire.fr' }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -116,15 +120,15 @@
                                 <ul class="space-y-2">
                                     <li class="flex justify-between">
                                         <span class="text-blue-200">Lundi - vendredi</span>
-                                        <span>8h - 21h</span>
+                                        <span>{{ openingHours['lundi-vendredi'] ?? '8h - 21h' }}</span>
                                     </li>
                                     <li class="flex justify-between">
                                         <span class="text-blue-200">Samedi</span>
-                                        <span>8h - 16h</span>
+                                        <span>{{ openingHours.samedi ?? '8h - 16h' }}</span>
                                     </li>
                                     <li class="flex justify-between">
                                         <span class="text-blue-200">Dimanche</span>
-                                        <span>Fermé</span>
+                                        <span>{{ openingHours.dimanche ?? 'Ferme' }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -146,6 +150,7 @@
 
                 {% block javascripts %}
                     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+                    <script src="{{ asset('assets/js/activity_watcher.js') }}"></script>
                     <script src="{{ asset('assets/js/home.js') }}"></script>
                     <!-- GLightbox JS -->
                     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

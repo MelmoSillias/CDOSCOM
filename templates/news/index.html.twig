@@ -9,13 +9,15 @@
             <p class="text-gray-600 max-w-3xl mx-auto">Consultez les dernières annonces du cabinet.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {% for slug, entry in news %}
+            {% for entry in news %}
                 <article class="bg-white rounded-xl shadow-md border border-gray-100 p-6 flex flex-col">
-                    <div class="text-blue-700 text-sm mb-2">{{ entry.date }}</div>
-                    <h2 class="text-xl font-semibold text-blue-900 mb-3">{{ entry.title }}</h2>
-                    <p class="text-gray-600 flex-1">{{ entry.summary }}</p>
-                    <a href="{{ path('news_show', { slug }) }}" class="mt-4 inline-flex items-center text-blue-800 font-semibold hover:text-blue-600">Voir <span class="ml-1">→</span></a>
+                    <div class="text-blue-700 text-sm mb-2">{{ entry.datePublication|date('d/m/Y H:i') }}</div>
+                    <h2 class="text-xl font-semibold text-blue-900 mb-3">{{ entry.titre }}</h2>
+                    <p class="text-gray-600 flex-1">{{ entry.contenu|striptags|slice(0, 160) ~ (entry.contenu|striptags|length > 160 ? '...' : '') }}</p>
+                    <a href="{{ path('news_show', { slug: entry.slug }) }}" class="mt-4 inline-flex items-center text-blue-800 font-semibold hover:text-blue-600">Voir <span class="ml-1">→</span></a>
                 </article>
+            {% else %}
+                <div class="col-span-full text-center text-gray-600">Aucune actualite publiee.</div>
             {% endfor %}
         </div>
     </div>

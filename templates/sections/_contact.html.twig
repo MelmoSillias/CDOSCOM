@@ -1,4 +1,7 @@
 <section id="contact" class="py-20 bg-blue-50">
+    {% set siteConfig = site_configuration() %}
+    {% set contact = siteConfig.contact ?? {} %}
+    {% set socialLinks = siteConfig.social_links ?? {} %}
     <div class="container mx-auto px-6 md:px-12">
         <div class="text-center mb-16">
             <h2 class="text-3xl font-bold text-blue-900 mb-4">Contactez-nous</h2>
@@ -15,7 +18,7 @@
                         </div>
                         <div>
                             <p class="font-medium text-gray-800">Téléphone</p>
-                            <p class="text-gray-600">+223 84 07 55 18 / +223 44 56 94 39</p>
+                            <p class="text-gray-600">{{ (contact.phones ?? ['+223 84 07 55 18', '+223 44 56 94 39'])|join(' / ') }}</p>
                         </div>
                     </div>
                     <div class="flex items-start">
@@ -24,7 +27,7 @@
                         </div>
                         <div>
                             <p class="font-medium text-gray-800">Email</p>
-                            <p class="text-gray-600">contact@cdos-dentaire.fr</p>
+                            <p class="text-gray-600">{{ contact.email ?? 'contact@cdos-dentaire.fr' }}</p>
                         </div>
                     </div>
                     <div class="flex items-start">
@@ -33,7 +36,7 @@
                         </div>
                         <div>
                             <p class="font-medium text-gray-800">Adresse</p>
-                            <p class="text-gray-600">À 100m du feu de Garantiguibougou<br>en face de la voie de Garantiguibougou <br> Rue: 426, Estée 192</p>
+                            <p class="text-gray-600">{{ contact.address ?? 'A 100m du feu de Garantiguibougou en face de la voie de Garantiguibougou Rue: 426, Estee 192' }}</p>
                         </div>
                     </div>
                 </div>
@@ -53,6 +56,10 @@
                         </div>
                     </div>
                     <div>
+                        <label for="contact-phone" class="block text-gray-700 mb-2">Téléphone</label>
+                        <input type="tel" id="contact-phone" name="phone" minlength="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div>
                         <label for="contact-subject" class="block text-gray-700 mb-2">Sujet</label>
                         <input type="text" id="contact-subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     </div>
@@ -68,19 +75,19 @@
         <div class="mt-16 text-center animate-fadeIn delay-400">
             <h3 class="text-xl font-semibold text-blue-800 mb-6">Suivez-nous sur les réseaux sociaux</h3>
             <div class="flex justify-center space-x-6">
-                <a href="#" class="w-12 h-12 bg-blue-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition">
+                <a href="{{ socialLinks.facebook ?? '#' }}" class="w-12 h-12 bg-blue-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-facebook-f text-xl"></i>
                 </a>
-                <a href="#" class="w-12 h-12 bg-red-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition">
+                <a href="{{ socialLinks.instagram ?? '#' }}" class="w-12 h-12 bg-red-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-instagram text-xl"></i>
                 </a>
-                <a href="#" class="w-12 h-12 bg-sky-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition">
+                <a href="{{ socialLinks.linkedin ?? '#' }}" class="w-12 h-12 bg-sky-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-linkedin-in text-xl"></i>
                 </a>
-                <a href="https://www.tiktok.com/discover/cabinet-dentaire-%C3%A0-bamako?is_from_webapp=1&sender_device=pc" class="w-12 h-12 bg-gray-900 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition">
+                <a href="{{ socialLinks.tiktok ?? '#' }}" class="w-12 h-12 bg-gray-900 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-tiktok text-xl"></i>
                 </a>
-                <a href="#" class="w-12 h-12 bg-green-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition">
+                <a href="{{ socialLinks.whatsapp ?? '#' }}" class="w-12 h-12 bg-green-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-whatsapp text-xl"></i>
                 </a>
             </div>
@@ -111,6 +118,7 @@ document.getElementById('contact-form').addEventListener('submit', function(e) {
         type: 'contact',
         name: formData.get('name'),
         email: formData.get('email'),
+        phone: formData.get('phone'),
         subject: formData.get('subject'),
         message: formData.get('message')
     };
@@ -122,8 +130,8 @@ document.getElementById('contact-form').addEventListener('submit', function(e) {
         return;
     }
 
-    if (!data.name.trim() || !data.subject.trim() || !data.message.trim()) {
-        showModal('error', 'Erreur', 'Tous les champs sont obligatoires.');
+    if (!data.name.trim() || !data.subject.trim() || !data.message.trim() || !data.phone.trim() || data.phone.trim().length < 6) {
+        showModal('error', 'Erreur', 'Tous les champs sont obligatoires. Le telephone doit avoir au moins 6 caracteres.');
         return;
     }
 

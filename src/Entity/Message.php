@@ -55,6 +55,10 @@ class Message
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
+    #[ORM\Column(length: 20, options: ['default' => 'pending'])]
+    #[Assert\Choice(choices: ['pending', 'sent', 'failed'])]
+    private ?string $statutEnvoiMail = 'pending';
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -181,6 +185,18 @@ class Message
     public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getStatutEnvoiMail(): ?string
+    {
+        return $this->statutEnvoiMail;
+    }
+
+    public function setStatutEnvoiMail(string $statutEnvoiMail): static
+    {
+        $this->statutEnvoiMail = $statutEnvoiMail;
 
         return $this;
     }
