@@ -19,10 +19,17 @@ services:
     App\Service\SiteConfigurationService:
         arguments:
             $projectDir: '%kernel.project_dir%'
+            $mailSenderAddress: '%env(string:MAIL_SENDER_ADDRESS)%'
+            $mailSenderName: '%env(string:MAIL_SENDER_NAME)%'
+            $mailNotificationRecipients: '%env(string:MAIL_NOTIFICATION_RECIPIENTS)%'
 
     App\Service\FileUploadService:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    App\Service\MessageService:
+        arguments:
+            $mailerDsn: '%env(string:MAILER_DSN)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

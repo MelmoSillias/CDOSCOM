@@ -27,7 +27,7 @@
                         </div>
                         <div>
                             <p class="font-medium text-gray-800">Email</p>
-                            <p class="text-gray-600">{{ contact.email ?? 'contact@cdos-dentaire.fr' }}</p>
+                            <p class="text-gray-600">{{ contact.email ?? 'cdos.mali25@gmail.com' }}</p>
                         </div>
                     </div>
                     <div class="flex items-start">
@@ -67,7 +67,7 @@
                         <label for="contact-message" class="block text-gray-700 mb-2">Message</label>
                         <textarea id="contact-message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
                     </div>
-                    <button type="submit" class="bg-blue-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-900 transition">Envoyer le message</button>
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-900 transition disabled:opacity-70 disabled:cursor-not-allowed" data-loading-text="Envoi en cours...">Envoyer le message</button>
                 </form>
             </div>
         </div>
@@ -99,84 +99,110 @@
 <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
         <div class="text-center">
-            <div id="modal-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div id="contact-modal-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <!-- Icon will be set by JS -->
             </div>
-            <h3 id="modal-title" class="text-xl font-bold mb-2"></h3>
-            <p id="modal-message" class="text-gray-600 mb-6"></p>
+            <h3 id="contact-modal-title" class="text-xl font-bold mb-2"></h3>
+            <p id="contact-modal-message" class="text-gray-600 mb-6"></p>
             <button id="contact-close-modal" class="bg-blue-800 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-900 transition">Fermer</button>
         </div>
     </div>
 </div>
 
 <script>
-document.getElementById('contact-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    const data = {
-        type: 'contact',
-        name: formData.get('name'),
-        email: formData.get('email'),
-        phone: formData.get('phone'),
-        subject: formData.get('subject'),
-        message: formData.get('message')
-    };
-
-    // Validation côté client
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-        showModal('error', 'Erreur', 'Veuillez entrer une adresse email valide.');
+(function initContactForm() {
+    const form = document.getElementById('contact-form');
+    if (!form || form.dataset.initialized === 'true') {
         return;
     }
 
-    if (!data.name.trim() || !data.subject.trim() || !data.message.trim() || !data.phone.trim() || data.phone.trim().length < 6) {
-        showModal('error', 'Erreur', 'Tous les champs sont obligatoires. Le telephone doit avoir au moins 6 caracteres.');
-        return;
-    }
+    form.dataset.initialized = 'true';
 
-    // Envoyer à l'API
-    fetch('/api/messages', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.error) {
-            showModal('error', 'Erreur d\'envoi', result.error);
-        } else {
-            showModal('success', 'Message envoyé!', result.message);
-            this.reset();
-        }
-    })
-    .catch(error => {
-        showModal('error', 'Erreur', 'Une erreur s\'est produite. Veuillez réessayer.');
-    });
-});
-
-function showModal(type, title, message) {
+    const submitButton = form.querySelector('button[type="submit"]');
     const modal = document.getElementById('contact-modal');
-    const icon = document.getElementById('modal-icon');
-    const titleEl = document.getElementById('modal-title');
-    const messageEl = document.getElementById('modal-message');
+    const icon = document.getElementById('contact-modal-icon');
+    const titleEl = document.getElementById('contact-modal-title');
+    const messageEl = document.getElementById('contact-modal-message');
+    const closeModalButton = document.getElementById('contact-close-modal');
 
-    if (type === 'success') {
-        icon.innerHTML = '<i class="fas fa-check text-green-600 text-2xl"></i>';
-        icon.className = 'w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4';
-    } else {
-        icon.innerHTML = '<i class="fas fa-times text-red-600 text-2xl"></i>';
-        icon.className = 'w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4';
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (submitButton.disabled) {
+            return;
+        }
+
+        const formData = new FormData(form);
+        const data = {
+            type: 'contact',
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            subject: formData.get('subject'),
+            message: formData.get('message')
+        };
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(data.email)) {
+            showModal('error', 'Erreur', 'Veuillez entrer une adresse email valide.');
+            return;
+        }
+
+        if (!data.name.trim() || !data.subject.trim() || !data.message.trim() || !data.phone.trim() || data.phone.trim().length < 6) {
+            showModal('error', 'Erreur', 'Tous les champs sont obligatoires. Le telephone doit avoir au moins 6 caracteres.');
+            return;
+        }
+
+        setSubmitting(true);
+
+        try {
+            const response = await fetch('/api/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+
+            if (result.error) {
+                showModal('error', 'Erreur d\'envoi', result.error);
+            } else if (result.mailDelivered === false) {
+                showModal('error', 'Notification non envoyee', result.message || 'Le message a ete enregistre, mais l\'e-mail n\'a pas pu etre envoye.');
+            } else {
+                showModal('success', 'Message envoyé!', result.message);
+                form.reset();
+            }
+        } catch (error) {
+            showModal('error', 'Erreur', 'Une erreur s\'est produite. Veuillez réessayer.');
+        } finally {
+            setSubmitting(false);
+        }
+    });
+
+    closeModalButton.addEventListener('click', function() {
+        modal.classList.add('hidden');
+    });
+
+    function setSubmitting(isSubmitting) {
+        submitButton.disabled = isSubmitting;
+        submitButton.textContent = isSubmitting
+            ? submitButton.dataset.loadingText
+            : 'Envoyer le message';
     }
 
-    titleEl.textContent = title;
-    messageEl.textContent = message;
-    modal.classList.remove('hidden');
-}
+    function showModal(type, title, message) {
+        if (type === 'success') {
+            icon.innerHTML = '<i class="fas fa-check text-green-600 text-2xl"></i>';
+            icon.className = 'w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4';
+        } else {
+            icon.innerHTML = '<i class="fas fa-times text-red-600 text-2xl"></i>';
+            icon.className = 'w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4';
+        }
 
-document.getElementById('contact-close-modal').addEventListener('click', function() {
-    document.getElementById('contact-modal').classList.add('hidden');
-});
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        modal.classList.remove('hidden');
+    }
+})();
 </script>

@@ -44,9 +44,17 @@ class MessageController extends AbstractController
 
         try {
             $message = $this->messageService->createMessage($data);
+
+            $mailStatus = $message->getStatutEnvoiMail() ?? 'failed';
+            $mailDelivered = $mailStatus === 'sent';
+
             return $this->json([
-                'message' => 'Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.',
-                'id' => $message->getId()
+                'message' => $mailDelivered
+                    ? 'Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.'
+                    : 'Votre message a été enregistré, mais la notification e-mail a échoué. Veuillez contacter l\'administrateur.',
+                'id' => $message->getId(),
+                'mailStatus' => $mailStatus,
+                'mailDelivered' => $mailDelivered,
             ], 201);
         } catch (\InvalidArgumentException $e) {
             return $this->json(['error' => $e->getMessage()], 400);
@@ -173,6 +181,32 @@ class MessageController extends AbstractController
             ]);
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    #[Route('/{id}/reply', name: 'api_message_reply', methods: ['POST'])]
+    public function reply(int $id, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!$data) {
+            return $this->json(['error' => 'Données JSON invalides.'], 400);
+        }
+
+        try {
+            $message = $this->messageService->sendReply($id, $data);
+
+            return $this->json([
+                'message' => 'Réponse envoyée avec succès.',
+                'id' => $message->getId(),
+                'status' => $message->getStatus(),
+            ]);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json(['error' => $e->getMessage()], 400);
+        } catch (\RuntimeException $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'Une erreur inattendue s\'est produite. Veuillez réessayer plus tard.'], 500);
         }
     }
 }

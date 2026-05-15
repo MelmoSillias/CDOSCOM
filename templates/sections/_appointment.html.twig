@@ -23,7 +23,7 @@
                             <i class="fas fa-envelope"></i>
                         </div>
                         <div>
-                            <p class="font-semibold">{{ contact.email ?? 'contact@cdos-dentaire.fr' }}</p>
+                            <p class="font-semibold">{{ contact.email ?? 'cdos.mali25@gmail.com' }}</p>
                             <p class="text-blue-200">Réponse sous 24h</p>
                         </div>
                     </div>
@@ -231,7 +231,7 @@
                         <label for="message" class="block text-gray-700 mb-2">Message</label>
                         <textarea id="message" name="message" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-blue-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-900 transition">Envoyer la demande</button>
+                    <button type="submit" class="w-full bg-blue-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-900 transition disabled:opacity-70 disabled:cursor-not-allowed" data-loading-text="Envoi en cours...">Envoyer la demande</button>
                 </form>
             </div>
         </div>
@@ -242,20 +242,28 @@
 <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
         <div class="text-center">
-            <div id="modal-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"></div>
-            <h3 id="modal-title" class="text-xl font-bold mb-2"></h3>
-            <p id="modal-message" class="text-gray-600 mb-6"></p>
+            <div id="appointment-modal-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"></div>
+            <h3 id="appointment-modal-title" class="text-xl font-bold mb-2"></h3>
+            <p id="appointment-modal-message" class="text-gray-600 mb-6"></p>
             <button id="close-modal" class="bg-blue-800 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-900 transition">Fermer</button>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+(function initAppointmentForm() {
+    const form = document.getElementById('appointment-form');
+    if (!form || form.dataset.initialized === 'true') {
+        return;
+    }
+
+    form.dataset.initialized = 'true';
+
     const dropdown = document.getElementById('dropdown-phone');
     const button = document.getElementById('dropdown-phone-button');
     const input = document.getElementById('phone-input');
     const codeSpan = button.querySelector('[data-selected-code]');
+    const submitButton = form.querySelector('button[type="submit"]');
 
     // Gestion du dropdown
     button.addEventListener('click', (e) => {
@@ -282,15 +290,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Soumission du formulaire
-    document.getElementById('appointment-form').addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const formData = new FormData(this);
+
+        if (submitButton.disabled) {
+            return;
+        }
+
+        const formData = new FormData(form);
+        const selectedCode = codeSpan.textContent.trim();
+        const rawPhone = String(formData.get('phone') || '').trim();
         const data = {
             type: 'appointment',
             firstName: formData.get('firstName'),
             lastName: formData.get('lastName'),
             email: formData.get('email'),
-            phone: formData.get('phone'),
+            phone: rawPhone.startsWith('+') ? rawPhone : `${selectedCode} ${rawPhone}`.trim(),
             date: formData.get('date'),
             message: formData.get('message')
         };
@@ -312,32 +327,37 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Envoi à l'API
-        fetch('/api/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
+        setSubmitting(true);
+
+        try {
+            const response = await fetch('/api/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+
             if (result.error) {
                 showModal('error', 'Erreur d\'envoi', result.error);
+            } else if (result.mailDelivered === false) {
+                showModal('error', 'Notification non envoyee', result.message || 'La demande a ete enregistree, mais l\'e-mail n\'a pas pu etre envoye.');
             } else {
                 showModal('success', 'Demande envoyée!', result.message);
-                this.reset();
+                form.reset();
             }
-        })
-        .catch(error => {
+        } catch (error) {
             showModal('error', 'Erreur', 'Une erreur s\'est produite. Veuillez réessayer.');
-        });
+        } finally {
+            setSubmitting(false);
+        }
     });
 
     // Gestion de la modal
     function showModal(type, title, message) {
         const modal = document.getElementById('success-modal');
-        const icon = document.getElementById('modal-icon');
-        const titleEl = document.getElementById('modal-title');
-        const messageEl = document.getElementById('modal-message');
+        const icon = document.getElementById('appointment-modal-icon');
+        const titleEl = document.getElementById('appointment-modal-title');
+        const messageEl = document.getElementById('appointment-modal-message');
 
         if (type === 'success') {
             icon.innerHTML = '<i class="fas fa-check text-green-600 text-2xl"></i>';
@@ -352,8 +372,15 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.remove('hidden');
     }
 
+    function setSubmitting(isSubmitting) {
+        submitButton.disabled = isSubmitting;
+        submitButton.textContent = isSubmitting
+            ? submitButton.dataset.loadingText
+            : 'Envoyer la demande';
+    }
+
     document.getElementById('close-modal').addEventListener('click', function() {
         document.getElementById('success-modal').classList.add('hidden');
     });
-});
+})();
 </script>

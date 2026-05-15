@@ -16,152 +16,154 @@
             <script src="https://cdn.jsdelivr.net/npm/jquery.min.js"></script>
         {% endblock %}
     </head>
-            <body class="bg-white text-gray-800">
-                {% set siteConfig = site_configuration() %}
-                {% set contact = siteConfig.contact ?? {} %}
-                {% set socialLinks = siteConfig.social_links ?? {} %}
-                {% set openingHours = siteConfig.opening_hours ?? {} %}
-                <div id="loader" class="fixed inset-0 flex items-center justify-center bg-white z-50">
-                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-800"></div>
+    <body class="bg-white text-gray-800">
+
+        {% set siteConfig = site_configuration() %}
+        {% set contact = siteConfig.contact ?? {} %}
+        {% set socialLinks = siteConfig.social_links ?? {} %}
+        {% set openingHours = siteConfig.opening_hours ?? {} %}
+
+        <div id="loader" class="fixed inset-0 flex items-center justify-center bg-white z-50">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-800"></div>
+        </div>
+
+        {% set currentRoute = app.request.attributes.get('_route') %}
+        {% set activeClass = 'is-active font-semibold' %}
+
+        <nav id="navbar" class="sticky top-0 w-full z-50 transition-all duration-300 py-4 bg-blue-800 shadow-lg">
+            <div class="container mx-auto px-6 md:px-12">
+                <div class="flex justify-between items-center overflow-x-auto whitespace-nowrap">
+                    <div class="flex items-center flex-shrink-0">
+                        <div class="w-[64px] h-[64px] rounded-full flex items-center justify-center mr-3">
+                            <img src="{{ asset('assets/img/logoCDOS.png') }}" alt="">
+                        </div>
+                        <a href="{{ path('app_home') }}" class="text-2xl font-bold text-white whitespace-nowrap"><small>Cabinet dentaire</small> <br> Ousmane Sow</a>
+                    </div>
+
+                    <div class="hidden lg:flex items-center space-x-6 whitespace-nowrap">
+                        <a href="{{ path('app_home') }}#home" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'app_home' ? activeClass : '' }}" aria-current="{{ currentRoute == 'app_home' ? 'page' : 'false' }}">Accueil</a>
+                        <a href="{{ path('section_about') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_about' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_about' ? 'page' : 'false' }}">À propos</a>
+                        <a href="{{ path('section_team') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_team' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_team' ? 'page' : 'false' }}">Équipe</a>
+                        <a href="{{ path('section_services') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_services' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_services' ? 'page' : 'false' }}">Services</a>
+                        <a href="{{ path('news_index') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'news_index' ? activeClass : '' }}" aria-current="{{ currentRoute == 'news_index' ? 'page' : 'false' }}">Actualités</a> 
+                        <a href="{{ path('section_location') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_location' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_location' ? 'page' : 'false' }}">Localisation</a>
+                        <a href="{{ path('section_contact') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_contact' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_contact' ? 'page' : 'false' }}">Contact</a>
+                        <a href="{{ path('section_appointment') }}" class="ml-4 bg-white text-blue-800 px-6 py-2 rounded-full font-medium hover:bg-blue-100 transition whitespace-nowrap">Prendre RDV</a>
+                    </div>
+
+                    <button id="mobile-menu-button" class="lg:hidden text-white focus:outline-none ml-4 flex-shrink-0 z-51">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div id="mobile-menu" class="hidden lg:hidden bg-blue-800 w-full absolute left-0 mt-4 py-4 px-6 z-50">
+            <div class="flex flex-col space-y-4">
+                <a href="{{ path('app_home') }}#home" class="text-white hover:text-blue-200 {{ currentRoute == 'app_home' ? activeClass : '' }}" aria-current="{{ currentRoute == 'app_home' ? 'page' : 'false' }}">Accueil</a>
+                <a href="{{ path('section_about') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_about' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_about' ? 'page' : 'false' }}">À propos</a>
+                <a href="{{ path('section_team') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_team' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_team' ? 'page' : 'false' }}">Équipe</a>
+                <a href="{{ path('section_services') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_services' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_services' ? 'page' : 'false' }}">Services</a>
+                <a href="{{ path('news_index') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'news_index' ? activeClass : '' }}" aria-current="{{ currentRoute == 'news_index' ? 'page' : 'false' }}">Actualités</a>
+                <a href="{{ path('section_appointment') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_appointment' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_appointment' ? 'page' : 'false' }}">Rendez-vous</a>
+                <a href="{{ path('section_location') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_location' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_location' ? 'page' : 'false' }}">Localisation</a>
+                <a href="{{ path('section_contact') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_contact' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_contact' ? 'page' : 'false' }}">Contact</a>
+                <a href="{{ path('section_appointment') }}" class="bg-white text-blue-800 px-6 py-2 rounded-full font-medium text-center hover:bg-blue-100 transition">Prendre RDV</a>
+            </div>
+        </div>
+
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer class="bg-blue-900 text-white py-12">
+            <div class="container mx-auto px-6 md:px-12">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div>
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-tooth text-blue-800"></i>
+                            </div>
+                            <span class="text-xl font-bold">CDOS</span>
+                        </div>
+                        <p class="text-blue-200">Cabinet Dentaire Ousmane Sow - Des soins dentaires de qualité.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Liens rapides</h3>
+                        <ul class="space-y-2">
+                            <li><a href="{{ path('app_home') }}#home" class="text-blue-200 hover:text-white transition">Accueil</a></li>
+                            <li><a href="{{ path('section_about') }}" class="text-blue-200 hover:text-white transition">À propos</a></li>
+                            <li><a href="{{ path('section_services') }}" class="text-blue-200 hover:text-white transition">Services</a></li>
+                            <li><a href="{{ path('section_appointment') }}" class="text-blue-200 hover:text-white transition">Rendez-vous</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Contact</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-map-marker-alt mt-1 mr-2 text-blue-300"></i>
+                                <span class="text-blue-200">{{ contact.address ?? 'A 100m du feu de Garantiguibougou, en face de la voie de Garantiguibougou | Rue: 426, Estee 192' }}</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-phone mr-2 text-blue-300"></i>
+                                <span class="text-blue-200">{{ (contact.phones ?? ['+223 84 07 55 18', '+223 44 56 94 39'])|join(' / ') }}</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-envelope mr-2 text-blue-300"></i>
+                                <span class="text-blue-200">{{ contact.email ?? 'cdos.mali25@gmail.com' }}</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Horaires</h3>
+                        <ul class="space-y-2">
+                            <li class="flex justify-between">
+                                <span class="text-blue-200">Lundi - vendredi</span>
+                                <span>{{ openingHours['lundi-vendredi'] ?? '8h - 21h' }}</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-blue-200">Samedi</span>
+                                <span>{{ openingHours.samedi ?? '8h - 16h' }}</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-blue-200">Dimanche</span>
+                                <span>{{ openingHours.dimanche ?? 'Ferme' }}</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
-                {% set currentRoute = app.request.attributes.get('_route') %}
-                {% set activeClass = 'is-active font-semibold' %}
-
-                <nav id="navbar" class="sticky top-0 w-full z-50 transition-all duration-300 py-4 bg-blue-800 shadow-lg">
-                    <div class="container mx-auto px-6 md:px-12">
-                        <div class="flex justify-between items-center overflow-x-auto whitespace-nowrap">
-                            <div class="flex items-center flex-shrink-0">
-                                <div class="w-[64px] h-[64px] rounded-full flex items-center justify-center mr-3">
-                                    <img src="{{ asset('assets/img/logoCDOS.png') }}" alt="">
-                                </div>
-                                <a href="{{ path('app_home') }}" class="text-2xl font-bold text-white whitespace-nowrap"><small>Cabinet dentaire</small> <br> Ousmane Sow</a>
-                            </div>
-
-                            <div class="hidden lg:flex items-center space-x-6 whitespace-nowrap">
-                                <a href="{{ path('app_home') }}#home" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'app_home' ? activeClass : '' }}" aria-current="{{ currentRoute == 'app_home' ? 'page' : 'false' }}">Accueil</a>
-                                <a href="{{ path('section_about') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_about' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_about' ? 'page' : 'false' }}">À propos</a>
-                                <a href="{{ path('section_team') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_team' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_team' ? 'page' : 'false' }}">Équipe</a>
-                                <a href="{{ path('section_services') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_services' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_services' ? 'page' : 'false' }}">Services</a>
-                                <a href="{{ path('news_index') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'news_index' ? activeClass : '' }}" aria-current="{{ currentRoute == 'news_index' ? 'page' : 'false' }}">Actualités</a> 
-                                <a href="{{ path('section_location') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_location' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_location' ? 'page' : 'false' }}">Localisation</a>
-                                <a href="{{ path('section_contact') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_contact' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_contact' ? 'page' : 'false' }}">Contact</a>
-                                <a href="{{ path('section_appointment') }}" class="ml-4 bg-white text-blue-800 px-6 py-2 rounded-full font-medium hover:bg-blue-100 transition whitespace-nowrap">Prendre RDV</a>
-                            </div>
-
-                            <button id="mobile-menu-button" class="lg:hidden text-white focus:outline-none ml-4 flex-shrink-0 z-51">
-                                <i class="fas fa-bars text-2xl"></i>
-                            </button>
-                        </div>
-                    </div>
-                </nav>
-
-                <div id="mobile-menu" class="hidden lg:hidden bg-blue-800 w-full absolute left-0 mt-4 py-4 px-6 z-50">
-                    <div class="flex flex-col space-y-4">
-                        <a href="{{ path('app_home') }}#home" class="text-white hover:text-blue-200 {{ currentRoute == 'app_home' ? activeClass : '' }}" aria-current="{{ currentRoute == 'app_home' ? 'page' : 'false' }}">Accueil</a>
-                        <a href="{{ path('section_about') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_about' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_about' ? 'page' : 'false' }}">À propos</a>
-                        <a href="{{ path('section_team') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_team' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_team' ? 'page' : 'false' }}">Équipe</a>
-                        <a href="{{ path('section_services') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_services' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_services' ? 'page' : 'false' }}">Services</a>
-                        <a href="{{ path('news_index') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'news_index' ? activeClass : '' }}" aria-current="{{ currentRoute == 'news_index' ? 'page' : 'false' }}">Actualités</a>
-                        <a href="{{ path('section_appointment') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_appointment' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_appointment' ? 'page' : 'false' }}">Rendez-vous</a>
-                        <a href="{{ path('section_location') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_location' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_location' ? 'page' : 'false' }}">Localisation</a>
-                        <a href="{{ path('section_contact') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_contact' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_contact' ? 'page' : 'false' }}">Contact</a>
-                        <a href="{{ path('section_appointment') }}" class="bg-white text-blue-800 px-6 py-2 rounded-full font-medium text-center hover:bg-blue-100 transition">Prendre RDV</a>
+                <div class="border-t border-blue-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-blue-300 mb-4 md:mb-0">© 2024 CDOS - Cabinet Dentaire Ousmane Sow. Tous droits réservés.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-300 hover:text-white transition">Mentions légales</a>
+                        <a href="#" class="text-blue-300 hover:text-white transition">Politique de confidentialité</a>
                     </div>
                 </div>
+            </div>
+        </footer>
 
-                <main>
-                    {% block body %}{% endblock %}
-                </main>
+        <button id="scroll-top" class="fixed bottom-8 right-8 w-12 h-12 bg-blue-800 text-white rounded-full shadow-lg flex items-center justify-center scroll-top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
 
-                <footer class="bg-blue-900 text-white py-12">
-                    <div class="container mx-auto px-6 md:px-12">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                            <div>
-                                <div class="flex items-center mb-4">
-                                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-tooth text-blue-800"></i>
-                                    </div>
-                                    <span class="text-xl font-bold">CDOS</span>
-                                </div>
-                                <p class="text-blue-200">Cabinet Dentaire Ousmane Sow - Des soins dentaires de qualité.</p>
-                            </div>
-
-                            <div>
-                                <h3 class="text-lg font-semibold mb-4">Liens rapides</h3>
-                                <ul class="space-y-2">
-                                    <li><a href="{{ path('app_home') }}#home" class="text-blue-200 hover:text-white transition">Accueil</a></li>
-                                    <li><a href="{{ path('section_about') }}" class="text-blue-200 hover:text-white transition">À propos</a></li>
-                                    <li><a href="{{ path('section_services') }}" class="text-blue-200 hover:text-white transition">Services</a></li>
-                                    <li><a href="{{ path('section_appointment') }}" class="text-blue-200 hover:text-white transition">Rendez-vous</a></li>
-                                </ul>
-                            </div>
-
-                            <div>
-                                <h3 class="text-lg font-semibold mb-4">Contact</h3>
-                                <ul class="space-y-2">
-                                    <li class="flex items-start">
-                                        <i class="fas fa-map-marker-alt mt-1 mr-2 text-blue-300"></i>
-                                        <span class="text-blue-200">{{ contact.address ?? 'A 100m du feu de Garantiguibougou, en face de la voie de Garantiguibougou | Rue: 426, Estee 192' }}</span>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-phone mr-2 text-blue-300"></i>
-                                        <span class="text-blue-200">{{ (contact.phones ?? ['+223 84 07 55 18', '+223 44 56 94 39'])|join(' / ') }}</span>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-envelope mr-2 text-blue-300"></i>
-                                        <span class="text-blue-200">{{ contact.email ?? 'contact@cdos-dentaire.fr' }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div>
-                                <h3 class="text-lg font-semibold mb-4">Horaires</h3>
-                                <ul class="space-y-2">
-                                    <li class="flex justify-between">
-                                        <span class="text-blue-200">Lundi - vendredi</span>
-                                        <span>{{ openingHours['lundi-vendredi'] ?? '8h - 21h' }}</span>
-                                    </li>
-                                    <li class="flex justify-between">
-                                        <span class="text-blue-200">Samedi</span>
-                                        <span>{{ openingHours.samedi ?? '8h - 16h' }}</span>
-                                    </li>
-                                    <li class="flex justify-between">
-                                        <span class="text-blue-200">Dimanche</span>
-                                        <span>{{ openingHours.dimanche ?? 'Ferme' }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-blue-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-                            <p class="text-blue-300 mb-4 md:mb-0">© 2024 CDOS - Cabinet Dentaire Ousmane Sow. Tous droits réservés.</p>
-                            <div class="flex space-x-4">
-                                <a href="#" class="text-blue-300 hover:text-white transition">Mentions légales</a>
-                                <a href="#" class="text-blue-300 hover:text-white transition">Politique de confidentialité</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-
-                <button id="scroll-top" class="fixed bottom-8 right-8 w-12 h-12 bg-blue-800 text-white rounded-full shadow-lg flex items-center justify-center scroll-top">
-                    <i class="fas fa-arrow-up"></i>
-                </button>
-
-                {% block javascripts %}
-                    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-                    <script src="{{ asset('assets/js/activity_watcher.js') }}"></script>
-                    <script src="{{ asset('assets/js/home.js') }}"></script>
-                    <!-- GLightbox JS -->
-                    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            if (window.GLightbox) {
-                                GLightbox({ selector: '.glightbox' });
-                            }
-                        });
-                    </script>
-                    {% block importmap %}{{ importmap('app') }}{% endblock %}
-                {% endblock %}
-            </body>
+        {% block javascripts %}
+            <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+            <script src="{{ asset('assets/js/activity_watcher.js') }}"></script>
+            <script src="{{ asset('assets/js/home.js') }}"></script>
+            <!-- GLightbox JS -->
+            <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (window.GLightbox) {
+                        GLightbox({ selector: '.glightbox' });
+                    }
+                });
+            </script>
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </body>
 </html>

@@ -5,9 +5,11 @@ namespace App\Service;
 use App\Entity\Message;
 use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MessageService
@@ -17,14 +19,18 @@ class MessageService
     private ValidatorInterface $validator;
     private MailerInterface $mailer;
     private SiteConfigurationService $siteConfigurationService;
+    private LoggerInterface $logger;
+    private string $mailerDsn;
 
-    public function __construct(EntityManagerInterface $entityManager, MessageRepository $messageRepository, ValidatorInterface $validator, MailerInterface $mailer, SiteConfigurationService $siteConfigurationService)
+    public function __construct(EntityManagerInterface $entityManager, MessageRepository $messageRepository, ValidatorInterface $validator, MailerInterface $mailer, SiteConfigurationService $siteConfigurationService, LoggerInterface $logger, string $mailerDsn)
     {
         $this->entityManager = $entityManager;
         $this->messageRepository = $messageRepository;
         $this->validator = $validator;
         $this->mailer = $mailer;
         $this->siteConfigurationService = $siteConfigurationService;
+        $this->logger = $logger;
+        $this->mailerDsn = $mailerDsn;
     }
 
     public function createMessage(array $data): Message
@@ -153,11 +159,83 @@ class MessageService
         }
 
         if (isset($data['status'])) {
-            $message->setStatus($data['status']);
+            $status = (string) $data['status'];
+
+            if ($status !== 'read') {
+                throw new \InvalidArgumentException('Seul le passage a l\'etat vu est autorise par cette action.');
+            }
+
+            if ($message->getStatus() === 'unread') {
+                $message->setStatus('read');
+            }
         }
 
         $this->entityManager->flush();
         return $message;
+    }
+
+    public function sendReply(int $id, array $data): Message
+    {
+        $message = $this->messageRepository->find($id);
+        if (!$message) {
+            throw new \Exception('Message not found');
+        }
+
+        $recipientEmail = $message->getEmail();
+        if (!is_string($recipientEmail) || !filter_var($recipientEmail, FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException('L\'email du visiteur est invalide.');
+        }
+
+        $subject = trim((string) ($data['subject'] ?? ''));
+        $body = trim((string) ($data['message'] ?? ''));
+
+        if ($subject === '') {
+            throw new \InvalidArgumentException('Le sujet de la reponse est obligatoire.');
+        }
+
+        if ($body === '') {
+            throw new \InvalidArgumentException('Le contenu de la reponse est obligatoire.');
+        }
+
+        if ($this->isNullTransportEnabled()) {
+            throw new \RuntimeException('Le transport mail est desactive pour ce runtime.');
+        }
+
+        $senderAddress = $this->siteConfigurationService->getMailSenderAddress();
+        $senderName = $this->siteConfigurationService->getMailSenderName();
+
+        if ($senderAddress === null) {
+            throw new \RuntimeException('L\'expediteur mail n\'est pas configure.');
+        }
+
+        $replyEmail = (new Email())
+            ->from(new Address($senderAddress, $senderName))
+            ->to($recipientEmail)
+            ->replyTo($senderAddress)
+            ->subject($subject)
+            ->text($this->buildReplyBody($message, $body));
+
+        try {
+            $this->logger->info('Sending reply e-mail to visitor.', [
+                'messageId' => $message->getId(),
+                'recipient' => $recipientEmail,
+                'dsn' => $this->getSafeMailerDsnForLogs(),
+            ]);
+
+            $this->mailer->send($replyEmail);
+            $message->setStatus('responded');
+            $this->entityManager->flush();
+
+            return $message;
+        } catch (TransportExceptionInterface|\Throwable $exception) {
+            $this->logger->error('Reply e-mail failed to send.', [
+                'messageId' => $message->getId(),
+                'recipient' => $recipientEmail,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw new \RuntimeException('L\'envoi de la reponse par e-mail a echoue.');
+        }
     }
 
     public function deleteMessage(int $id): void
@@ -185,28 +263,84 @@ class MessageService
 
     private function trySendNotificationEmail(Message $message): void
     {
-        $recipient = $this->siteConfigurationService->getMailRecipient();
-        if ($recipient === null || trim($recipient) === '') {
+        $recipients = $this->siteConfigurationService->getMailRecipients();
+        $senderAddress = $this->siteConfigurationService->getMailSenderAddress();
+        $senderName = $this->siteConfigurationService->getMailSenderName();
+
+        if ($this->isNullTransportEnabled()) {
             $message->setStatutEnvoiMail('failed');
+            $this->logger->warning('Notification e-mail not sent: null transport is enabled for current runtime.', [
+                'messageId' => $message->getId(),
+                'dsn' => $this->getSafeMailerDsnForLogs(),
+            ]);
+            $this->entityManager->flush();
+
+            return;
+        }
+
+        if ($recipients === [] || $senderAddress === null) {
+            $message->setStatutEnvoiMail('failed');
+            $this->logger->warning('Notification e-mail not sent: sender or recipients are not configured.', [
+                'messageId' => $message->getId(),
+                'hasRecipients' => $recipients !== [],
+                'hasSender' => $senderAddress !== null,
+            ]);
             $this->entityManager->flush();
 
             return;
         }
 
         $email = (new Email())
-            ->from('no-reply@cdos.local')
-            ->to($recipient)
+            ->from(new Address($senderAddress, $senderName))
+            ->to(...$recipients)
             ->subject(sprintf('Nouveau message (%s) - %s', $message->getType(), $message->getEmail()))
             ->text($this->buildMailBody($message));
 
+        $visitorEmail = $message->getEmail();
+        if (is_string($visitorEmail) && filter_var($visitorEmail, FILTER_VALIDATE_EMAIL)) {
+            $email->replyTo($visitorEmail);
+        }
+
         try {
+            $this->logger->info('Sending notification e-mail.', [
+                'messageId' => $message->getId(),
+                'type' => $message->getType(),
+                'recipients' => $recipients,
+                'dsn' => $this->getSafeMailerDsnForLogs(),
+            ]);
+
             $this->mailer->send($email);
             $message->setStatutEnvoiMail('sent');
         } catch (TransportExceptionInterface|\Throwable $exception) {
             $message->setStatutEnvoiMail('failed');
+            $this->logger->error('Notification e-mail failed to send.', [
+                'messageId' => $message->getId(),
+                'type' => $message->getType(),
+                'error' => $exception->getMessage(),
+            ]);
         }
 
         $this->entityManager->flush();
+    }
+
+    private function isNullTransportEnabled(): bool
+    {
+        return str_starts_with(trim($this->mailerDsn), 'null://');
+    }
+
+    private function getSafeMailerDsnForLogs(): string
+    {
+        $dsn = trim($this->mailerDsn);
+        $parts = parse_url($dsn);
+
+        if ($parts === false) {
+            return $dsn;
+        }
+
+        $scheme = $parts['scheme'] ?? 'unknown';
+        $host = $parts['host'] ?? 'n/a';
+
+        return sprintf('%s://%s', $scheme, $host);
     }
 
     private function buildMailBody(Message $message): string
@@ -220,6 +354,20 @@ class MessageService
             $message->getType() ?? '',
             $message->getSubject() ?? 'N/A',
             $message->getAppointmentDate()?->format('Y-m-d') ?? 'N/A',
+            $message->getContent() ?? ''
+        );
+    }
+
+    private function buildReplyBody(Message $message, string $replyContent): string
+    {
+        return sprintf(
+            "%s\n\n---\nMessage original de %s %s (%s)\nSujet: %s\nDate: %s\n\n%s",
+            $replyContent,
+            $message->getFirstName() ?? '',
+            $message->getLastName() ?? '',
+            $message->getEmail() ?? '',
+            $message->getSubject() ?? 'N/A',
+            $message->getCreatedAt()?->format('Y-m-d H:i:s') ?? 'N/A',
             $message->getContent() ?? ''
         );
     }

@@ -150,7 +150,7 @@
                 </div>
                 <div class="flex justify-end space-x-2">
                     <button type="button" id="close-reply-modal-btn" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-300">Annuler</button>
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700">Envoyer</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed" data-loading-text="Envoi en cours...">Envoyer</button>
                 </div>
             </form>
         </div>
@@ -175,5 +175,5 @@
 
 {% block javascripts %}
 {{ parent() }}
-<script src="{{ asset('assets/js/admin_messages.js') }}"></script>
+<script src="{{ asset('assets/js/admin_messages.js') }}?v=20260515-2"></script>
 {% endblock %}

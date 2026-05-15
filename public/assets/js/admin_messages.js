@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let pageSize = 25;
     let allMessages = [];
     let filteredMessages = [];
+    let currentReplyMessageId = null;
+    let currentReplyRecipientEmail = null;
 
     const tableBody = document.querySelector('#messages-table tbody');
     const paginationContainer = document.querySelector('#pagination-container');
@@ -98,9 +100,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get status badge HTML
     function getStatusBadge(status) {
         if (status === 'unread') {
-            return '<span class="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-red-100 text-red-800 rounded-full border border-red-200">Non lu</span>';
+            return '<span class="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-red-100 text-red-800 rounded-full border border-red-200">Non repondu</span>';
         } else if (status === 'read') {
-            return '<span class="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-yellow-100 text-yellow-800 rounded-full border border-yellow-200">Vu non répondu</span>';
+            return '<span class="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-yellow-100 text-yellow-800 rounded-full border border-yellow-200">Vu</span>';
         } else {
             return '<span class="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-green-100 text-green-800 rounded-full border border-green-200">Répondu</span>';
         }
@@ -110,9 +112,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function getActionsHtml(message) {
         let actions = `
             <div class="flex space-x-2">
-                <button class="mark-read-btn bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md" data-id="${message.id}" title="Marquer comme vu et répondre">
+                <button class="reply-btn bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md" data-id="${message.id}" title="Répondre">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8m-18 8h18a2 2 0 002-2V8a2 2 0 00-2-2H3a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
                     </svg>
                 </button>
                 <button class="view-details-btn bg-gray-500 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md" data-id="${message.id}" title="Voir les détails">
@@ -121,15 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
                 </button>`;
-
-        if (message.status !== 'responded') {
-            actions += `
-                <button class="mark-responded-btn bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md" data-id="${message.id}" title="Marquer comme répondu">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </button>`;
-        }
 
         actions += `
                 <button class="delete-btn bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md" data-id="${message.id}" title="Supprimer">
@@ -203,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
         loadMessages();
     });
 
-    // Mark as read and open reply modal
     tableBody.addEventListener('click', function(e) {
         if (e.target.closest('.retry-mail-btn')) {
             const id = e.target.closest('.retry-mail-btn').dataset.id;
@@ -220,22 +212,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        if (e.target.closest('.mark-read-btn')) {
-            const id = e.target.closest('.mark-read-btn').dataset.id;
-
-            fetch(`/api/messages/${id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: 'read' })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    loadMessageForReply(id);
-                } else {
-                    showNotification('Erreur lors de la mise à jour', 'error');
-                }
-            });
+            if (e.target.closest('.reply-btn')) {
+                const id = e.target.closest('.reply-btn').dataset.id;
+                loadMessageForReply(id);
         }
     });
 
@@ -244,6 +223,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(messageData => {
             if (messageData.id) {
+                    if (!isValidEmail(messageData.email)) {
+                        showNotification('L\'email du visiteur est invalide. Reponse impossible.', 'error');
+                        return;
+                    }
+
+                    currentReplyMessageId = messageData.id;
+                    currentReplyRecipientEmail = messageData.email;
+
                 const details = `
                     <div class="border-b pb-3 mb-3">
                         <div class="grid grid-cols-2 gap-2 text-sm">
@@ -263,9 +250,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
                 document.querySelector('#reply-message-details').innerHTML = details;
                 document.querySelector('#reply-subject').value = 'Re: ' + (messageData.subject || '');
+                document.querySelector('#reply-message').value = '';
                 document.querySelector('#reply-modal').classList.remove('hidden');
-                loadMessages();
-                showNotification('Message marqué comme vu', 'success');
             }
         });
     }
@@ -279,11 +265,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.id) {
-                    fetch(`/api/messages/${id}`, {
-                        method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ status: 'read' })
-                    });
+                    markMessageAsRead(id);
+                    const displayStatus = data.status === 'responded'
+                        ? 'Répondu'
+                        : 'Vu';
 
                     const details = `
                         <div class="grid grid-cols-2 gap-4 mb-4">
@@ -292,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div><strong>Nom:</strong> ${data.firstName || ''} ${data.lastName || ''}</div>
                             <div><strong>Email:</strong> ${data.email}</div>
                             <div><strong>Téléphone:</strong> ${data.phone || ''}</div>
-                            <div><strong>Statut:</strong> ${data.status === 'unread' ? 'Non lu' : data.status === 'read' ? 'Vu non répondu' : 'Répondu'}</div>
+                            <div><strong>Statut:</strong> ${displayStatus}</div>
                             <div><strong>Date:</strong> ${data.createdAt}</div>
                             ${data.appointmentDate ? `<div><strong>Date RDV:</strong> ${data.appointmentDate}</div>` : ''}
                         </div>
@@ -306,29 +291,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     `;
                     document.querySelector('#message-details').innerHTML = details;
                     document.querySelector('#details-modal').classList.remove('hidden');
-                    loadMessages();
-                }
-            });
-        }
-    });
-
-    // Mark as responded
-    tableBody.addEventListener('click', function(e) {
-        if (e.target.closest('.mark-responded-btn')) {
-            const id = e.target.closest('.mark-responded-btn').dataset.id;
-
-            fetch(`/api/messages/${id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: 'responded' })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    loadMessages();
-                    showNotification('Message marqué comme répondu', 'success');
-                } else {
-                    showNotification('Erreur lors de la mise à jour', 'error');
                 }
             });
         }
@@ -362,9 +324,48 @@ document.addEventListener('DOMContentLoaded', function() {
     // Reply form
     document.querySelector('#reply-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        showNotification('Fonctionnalité d\'email à implémenter', 'info');
-        document.querySelector('#reply-modal').classList.add('hidden');
-        this.reset();
+
+        if (!currentReplyMessageId || !isValidEmail(currentReplyRecipientEmail)) {
+            showNotification('Impossible d\'envoyer la reponse: email visiteur invalide.', 'error');
+            return;
+        }
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        const subject = document.querySelector('#reply-subject').value.trim();
+        const message = document.querySelector('#reply-message').value.trim();
+
+        if (!subject || !message) {
+            showNotification('Le sujet et le message sont obligatoires.', 'error');
+            return;
+        }
+
+        setButtonLoading(submitButton, true);
+
+        fetch(`/api/messages/${currentReplyMessageId}/reply`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ subject, message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                showNotification(data.error, 'error');
+                return;
+            }
+
+            document.querySelector('#reply-modal').classList.add('hidden');
+            document.querySelector('#reply-form').reset();
+            currentReplyMessageId = null;
+            currentReplyRecipientEmail = null;
+            loadMessages();
+            showNotification('Réponse envoyée et message marqué comme répondu', 'success');
+        })
+        .catch(() => {
+            showNotification('Erreur lors de l\'envoi de la réponse.', 'error');
+        })
+        .finally(() => {
+            setButtonLoading(submitButton, false);
+        });
     });
 
     // Modal close handlers
@@ -378,10 +379,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#close-reply-modal').addEventListener('click', function() {
         document.querySelector('#reply-modal').classList.add('hidden');
         document.querySelector('#reply-form').reset();
+        currentReplyMessageId = null;
+        currentReplyRecipientEmail = null;
     });
     document.querySelector('#close-reply-modal-btn').addEventListener('click', function() {
         document.querySelector('#reply-modal').classList.add('hidden');
         document.querySelector('#reply-form').reset();
+        currentReplyMessageId = null;
+        currentReplyRecipientEmail = null;
     });
 
     document.querySelector('#cancel-delete').addEventListener('click', function() {
@@ -396,6 +401,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.id === 'reply-modal') {
             document.querySelector('#reply-modal').classList.add('hidden');
             document.querySelector('#reply-form').reset();
+            currentReplyMessageId = null;
+            currentReplyRecipientEmail = null;
         }
         if (e.target.id === 'delete-modal') {
             document.querySelector('#delete-modal').classList.add('hidden');
@@ -423,6 +430,38 @@ document.addEventListener('DOMContentLoaded', function() {
             notification.style.opacity = '0';
             setTimeout(() => notification.remove(), 300);
         }, 3000);
+    }
+
+    function markMessageAsRead(id) {
+        fetch(`/api/messages/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'read' })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error) {
+                loadMessages();
+            }
+        })
+        .catch(() => {});
+    }
+
+    function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email || '');
+    }
+
+    function setButtonLoading(button, isLoading) {
+        if (!button) {
+            return;
+        }
+
+        if (!button.dataset.defaultText) {
+            button.dataset.defaultText = button.textContent.trim();
+        }
+
+        button.disabled = isLoading;
+        button.textContent = isLoading ? (button.dataset.loadingText || 'Chargement...') : button.dataset.defaultText;
     }
 
     // Initial load
