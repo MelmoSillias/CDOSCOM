@@ -17,10 +17,10 @@ final class SectionController extends AbstractController
         return $this->render('sections/about.html.twig');
     }
 
-    #[Route('/services', name: 'section_services')]
-    public function services(): Response
+    #[Route('/services-section', name: 'section_services')]
+    public function services(): RedirectResponse
     {
-        return $this->render('sections/services.html.twig');
+        return $this->redirectToRoute('services_index', [], Response::HTTP_MOVED_PERMANENTLY);
     }
 
     #[Route('/equipe', name: 'section_team')]

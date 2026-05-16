@@ -1,9 +1,62 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
+        {% set seoCurrentRoute = app.request.attributes.get('_route') %}
+        {% set seoCurrentRouteParams = app.request.attributes.get('_route_params') ?? {} %}
+        {% set seoCanonical = seoCurrentRoute ? absolute_url(path(seoCurrentRoute, seoCurrentRouteParams)) : app.request.uri %}
+        {% set seoSiteConfig = site_configuration() %}
+        {% set seoContact = seoSiteConfig.contact ?? {} %}
+        {% set seoSocialLinks = seoSiteConfig.social_links ?? {} %}
+        {% set seoPhones = seoContact.phones ?? [] %}
+        {% set seoPhone = seoPhones|length > 0 ? seoPhones|first : null %}
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Cabinet Dentaire Ousmane Sow{% endblock %}</title>
+        <title>{% block title %}Cabinet dentaire Ousmane Sow | Bamako{% endblock %}</title>
+        <meta name="description" content="{% block meta_description %}Cabinet dentaire Ousmane Sow a Bamako: soins dentaires, extractions, protheses, radiographie, esthetique et prise de rendez-vous rapide.{% endblock %}">
+        <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+        <link rel="canonical" href="{% block canonical %}{{ seoCanonical }}{% endblock %}">
+
+        <meta property="og:locale" content="fr_FR">
+        <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+        <meta property="og:title" content="{% block og_title %}{{ block('title')|striptags|trim }}{% endblock %}">
+        <meta property="og:description" content="{% block og_description %}{{ block('meta_description')|striptags|trim }}{% endblock %}">
+        <meta property="og:url" content="{{ seoCanonical }}">
+        <meta property="og:image" content="{% block og_image %}{{ absolute_url(asset('assets/img/logoCDOS.png')) }}{% endblock %}">
+        <meta property="og:site_name" content="Cabinet dentaire Ousmane Sow">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{% block twitter_title %}{{ block('og_title')|striptags|trim }}{% endblock %}">
+        <meta name="twitter:description" content="{% block twitter_description %}{{ block('og_description')|striptags|trim }}{% endblock %}">
+        <meta name="twitter:image" content="{% block twitter_image %}{{ block('og_image') }}{% endblock %}">
+
+        {% block structured_data %}
+            {% set localBusinessSchema = {
+                '@context': 'https://schema.org',
+                '@type': 'Dentist',
+                'name': 'Cabinet dentaire Ousmane Sow',
+                'url': absolute_url(path('app_home')),
+                'image': absolute_url(asset('assets/img/logoCDOS.png')),
+                'telephone': seoPhone,
+                'email': seoContact.email ?? null,
+                'address': {
+                    '@type': 'PostalAddress',
+                    'streetAddress': seoContact.address ?? null,
+                    'addressLocality': 'Bamako',
+                    'addressCountry': 'ML'
+                },
+                'sameAs': [
+                    seoSocialLinks.facebook ?? null,
+                    seoSocialLinks.instagram ?? null,
+                    seoSocialLinks.linkedin ?? null,
+                    seoSocialLinks.youtube ?? null
+                ]
+            } %}
+            <script type="application/ld+json">{{ localBusinessSchema|json_encode(constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+        {% endblock %}
+
+        <link rel="alternate" hreflang="fr" href="{{ seoCanonical }}">
+        <link rel="alternate" hreflang="x-default" href="{{ seoCanonical }}">
         <link rel="icon" href="{{ asset('favicon.ico') }}">
         {% block stylesheets %}
             <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +71,7 @@
     </head>
     <body class="bg-white text-gray-800">
 
-        {% set siteConfig = site_configuration() %}
+        {% set siteConfig = seoSiteConfig %}
         {% set contact = siteConfig.contact ?? {} %}
         {% set socialLinks = siteConfig.social_links ?? {} %}
         {% set openingHours = siteConfig.opening_hours ?? {} %}
@@ -28,6 +81,7 @@
         </div>
 
         {% set currentRoute = app.request.attributes.get('_route') %}
+        {% set servicesRoutes = ['services_index', 'service_show', 'section_services'] %}
         {% set activeClass = 'is-active font-semibold' %}
 
         <nav id="navbar" class="sticky top-0 w-full z-50 transition-all duration-300 py-4 bg-blue-800 shadow-lg">
@@ -35,7 +89,7 @@
                 <div class="flex justify-between items-center overflow-x-auto whitespace-nowrap">
                     <div class="flex items-center flex-shrink-0">
                         <div class="w-[64px] h-[64px] rounded-full flex items-center justify-center mr-3">
-                            <img src="{{ asset('assets/img/logoCDOS.png') }}" alt="">
+                            <img src="{{ asset('assets/img/logoCDOS.png') }}" alt="Logo du Cabinet dentaire Ousmane Sow">
                         </div>
                         <a href="{{ path('app_home') }}" class="text-2xl font-bold text-white whitespace-nowrap"><small>Cabinet dentaire</small> <br> Ousmane Sow</a>
                     </div>
@@ -44,8 +98,8 @@
                         <a href="{{ path('app_home') }}#home" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'app_home' ? activeClass : '' }}" aria-current="{{ currentRoute == 'app_home' ? 'page' : 'false' }}">Accueil</a>
                         <a href="{{ path('section_about') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_about' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_about' ? 'page' : 'false' }}">À propos</a>
                         <a href="{{ path('section_team') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_team' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_team' ? 'page' : 'false' }}">Équipe</a>
-                        <a href="{{ path('section_services') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_services' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_services' ? 'page' : 'false' }}">Services</a>
-                        <a href="{{ path('news_index') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'news_index' ? activeClass : '' }}" aria-current="{{ currentRoute == 'news_index' ? 'page' : 'false' }}">Actualités</a> 
+                        <a href="{{ path('services_index') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute in servicesRoutes ? activeClass : '' }}" aria-current="{{ currentRoute in servicesRoutes ? 'page' : 'false' }}">Services</a>
+                        <a href="{{ path('news_index') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'news_index' ? activeClass : '' }}" aria-current="{{ currentRoute == 'news_index' ? 'page' : 'false' }}">Actualités</a>
                         <a href="{{ path('section_location') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_location' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_location' ? 'page' : 'false' }}">Localisation</a>
                         <a href="{{ path('section_contact') }}" class="nav-link text-white hover:text-blue-200 {{ currentRoute == 'section_contact' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_contact' ? 'page' : 'false' }}">Contact</a>
                         <a href="{{ path('section_appointment') }}" class="ml-4 bg-white text-blue-800 px-6 py-2 rounded-full font-medium hover:bg-blue-100 transition whitespace-nowrap">Prendre RDV</a>
@@ -63,7 +117,7 @@
                 <a href="{{ path('app_home') }}#home" class="text-white hover:text-blue-200 {{ currentRoute == 'app_home' ? activeClass : '' }}" aria-current="{{ currentRoute == 'app_home' ? 'page' : 'false' }}">Accueil</a>
                 <a href="{{ path('section_about') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_about' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_about' ? 'page' : 'false' }}">À propos</a>
                 <a href="{{ path('section_team') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_team' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_team' ? 'page' : 'false' }}">Équipe</a>
-                <a href="{{ path('section_services') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_services' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_services' ? 'page' : 'false' }}">Services</a>
+                <a href="{{ path('services_index') }}" class="text-white hover:text-blue-200 {{ currentRoute in servicesRoutes ? activeClass : '' }}" aria-current="{{ currentRoute in servicesRoutes ? 'page' : 'false' }}">Services</a>
                 <a href="{{ path('news_index') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'news_index' ? activeClass : '' }}" aria-current="{{ currentRoute == 'news_index' ? 'page' : 'false' }}">Actualités</a>
                 <a href="{{ path('section_appointment') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_appointment' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_appointment' ? 'page' : 'false' }}">Rendez-vous</a>
                 <a href="{{ path('section_location') }}" class="text-white hover:text-blue-200 {{ currentRoute == 'section_location' ? activeClass : '' }}" aria-current="{{ currentRoute == 'section_location' ? 'page' : 'false' }}">Localisation</a>
@@ -94,7 +148,7 @@
                         <ul class="space-y-2">
                             <li><a href="{{ path('app_home') }}#home" class="text-blue-200 hover:text-white transition">Accueil</a></li>
                             <li><a href="{{ path('section_about') }}" class="text-blue-200 hover:text-white transition">À propos</a></li>
-                            <li><a href="{{ path('section_services') }}" class="text-blue-200 hover:text-white transition">Services</a></li>
+                            <li><a href="{{ path('services_index') }}" class="text-blue-200 hover:text-white transition">Services</a></li>
                             <li><a href="{{ path('section_appointment') }}" class="text-blue-200 hover:text-white transition">Rendez-vous</a></li>
                         </ul>
                     </div>
