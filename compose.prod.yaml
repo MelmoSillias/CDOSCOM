@@ -19,7 +19,7 @@ services:
       <<: *app-environment
       SERVER_NAME: :80
     volumes:
-      - uploads_data:/app/public/uploads
+      - ../files/uploads:/app/public/uploads
       - app_var:/app/var
     depends_on:
       database:
@@ -81,7 +81,6 @@ services:
       - internal
 
 volumes:
-  uploads_data:
   app_var:
   database_data:
 
