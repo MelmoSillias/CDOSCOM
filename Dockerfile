@@ -40,7 +40,8 @@ RUN composer install --no-cache --prefer-dist --no-dev --no-autoloader --no-scri
 
 COPY . ./
 
-RUN mkdir -p public/uploads var/cache var/log \
+RUN cp .env.prod .env \
+    && mkdir -p public/uploads var/cache var/log \
     && composer dump-autoload --classmap-authoritative --no-dev \
     && APP_SECRET=build-time-placeholder composer run-script --no-dev post-install-cmd \
     && APP_SECRET=build-time-placeholder php bin/console asset-map:compile \
