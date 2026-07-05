@@ -19,7 +19,7 @@ class ActualiteRepository extends ServiceEntityRepository
     public function findPublished(): array
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.delaiPublication <= :now')
+            ->andWhere('a.delaiPublication >= :now')
             ->setParameter('now', new \DateTimeImmutable())
             ->orderBy('a.datePublication', 'DESC')
             ->getQuery()

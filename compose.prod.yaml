@@ -1,0 +1,91 @@
+x-app-environment: &app-environment
+  APP_ENV: prod
+  APP_DEBUG: "0"
+  APP_SECRET: ${APP_SECRET}
+  DATABASE_URL: ${DATABASE_URL}
+  MAILER_DSN: ${MAILER_DSN}
+  MAIL_SENDER_ADDRESS: ${MAIL_SENDER_ADDRESS}
+  MAIL_SENDER_NAME: ${MAIL_SENDER_NAME}
+  MAIL_NOTIFICATION_RECIPIENTS: ${MAIL_NOTIFICATION_RECIPIENTS}
+  MESSENGER_TRANSPORT_DSN: ${MESSENGER_TRANSPORT_DSN:-doctrine://default?auto_setup=0}
+
+services:
+  app:
+    build:
+      context: .
+      target: frankenphp_prod
+    restart: unless-stopped
+    environment:
+      <<: *app-environment
+      SERVER_NAME: :80
+    volumes:
+      - uploads_data:/app/public/uploads
+      - app_var:/app/var
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+      - internal
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cdoscom.rule=Host(`cabinetdentaireousmanesow.cloud`)
+      - traefik.http.routers.cdoscom.entrypoints=websecure
+      - traefik.http.routers.cdoscom.tls.certresolver=letsencrypt
+      - traefik.http.services.cdoscom.loadbalancer.server.port=80
+
+  messenger-worker:
+    build:
+      context: .
+      target: frankenphp_prod
+    restart: unless-stopped
+    command:
+      - php
+      - bin/console
+      - messenger:consume
+      - async
+      - --time-limit=3600
+      - --memory-limit=128M
+      - -vv
+    environment:
+      <<: *app-environment
+    volumes:
+      - app_var:/app/var
+    depends_on:
+      app:
+        condition: service_started
+      database:
+        condition: service_healthy
+    networks:
+      - internal
+    healthcheck:
+      disable: true
+
+  database:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-cdoscom}
+      MARIADB_USER: ${MARIADB_USER:-cdoscom}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:?MARIADB_PASSWORD is required}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?MARIADB_ROOT_PASSWORD is required}
+    volumes:
+      - database_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - internal
+
+volumes:
+  uploads_data:
+  app_var:
+  database_data:
+
+networks:
+  dokploy-network:
+    external: true
+  internal:

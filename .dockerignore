@@ -1,0 +1,16 @@
+.git
+.github
+.env
+.env.*
+!.env.prod
+var/
+vendor/
+node_modules/
+tests/
+.phpunit.cache
+phpunit.dist.xml
+compose.override.yaml
+script.bash
+mods.txt
+SEO_SEARCH_CONSOLE_CHECKLIST.md
+API_MESSAGES.md
